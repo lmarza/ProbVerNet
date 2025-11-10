@@ -5,10 +5,10 @@ A unified deep neural networks probabilistic verification framework. ProbVerNet 
 ## Available Algorithms ✅
 
 
-- [ ] PT-LiRPA [A]: Probabilistically Tightened Linear Relaxation-based Perturbation Analysis, a novel probabilistic framework that combines over-approximation techniques from LiRPA-based approaches with a sampling-based method to compute tight intermediate reachable sets, significantly tightening the lower and upper linear bounds of a neural network's output and reducing the computational cost of formal verification tools while providing probabilistic guarantees on verification soundness. (coming soon).
-- [ ] CountingProVe [B,C]: Approximate count method with probabilistic guarantees on the interval of violation rate present in the property's domain (coming soon).
-- [x] ϵ-ProVe [C]: Efficient approximate enumeration strategy with tight probabilistic guarantees for enumerating all the (un)safe regions of the property's domain for a given safety property. 
-- [x] RF-ProVe[D]: Compact probabilistic enumeration of preimage bounds of neural networks with guarantees on the coverage and bounded error of the solution returned.
+- [ ] **PT-LiRPA** ([Marzari et al., und.review JAIR 2025](https://arxiv.org/pdf/2507.05405)): Probabilistically Tightened Linear Relaxation-based Perturbation Analysis, a novel probabilistic framework that combines over-approximation techniques from LiRPA-based approaches with a sampling-based method to compute tight intermediate reachable sets, significantly tightening the lower and upper linear bounds of a neural network's output and reducing the computational cost of formal verification tools while providing probabilistic guarantees on verification soundness (integration with the framework coming soon).
+- [ ] **CountingProVe** ([Marzari et al., IJCAI 2023](https://dl.acm.org/doi/abs/10.24963/ijcai.2023/25)): Approximate count method with probabilistic guarantees on the interval of violation rate present in the property's domain (integration with the framework coming soon).
+- [x] **ϵ-ProVe** ([Marzari et al., AAAI 2024](https://ojs.aaai.org/index.php/AAAI/article/view/30134)): Efficient approximate enumeration strategy with tight probabilistic guarantees for enumerating all the (un)safe regions of the property's domain for a given safety property. 
+- [x] **RF-ProVe** ([Marzari et al., AAAI 2026]()): Compact probabilistic enumeration of preimage bounds of neural networks with guarantees on the coverage and bounded error of the solution returned.
 
 ## Installation 
 
@@ -103,8 +103,6 @@ python e_prove.py --config_path "configs_e_prove/cartpole.yaml" # for ε-ProVe
 ## Reference 📚
 If you use our probabilistic framework in your work, please kindly cite our papers:
 
-
-**[A]** [Probabilistically Tightened Linear Relaxation-based Perturbation Analysis for Neural Network Verification](https://arxiv.org/pdf/2507.05405).  Marzari L., Cicalese F. and Farinelli A. Under review JAIR 2025
 ```
 @article{marzari2025probabilistically,
   title={Probabilistically Tightened Linear Relaxation-based Perturbation Analysis for Neural Network Verification},
@@ -113,10 +111,6 @@ If you use our probabilistic framework in your work, please kindly cite our pape
   year={2025}
 }
 
-```
-    
-**[B]** [The \#DNN-Verification Problem: Counting Unsafe Inputs for Deep Neural Networks](https://dl.acm.org/doi/abs/10.24963/ijcai.2023/25).  Marzari L., Corsi D., Cicalese F. and Farinelli A. In IJCAI 2023
-```
 @inproceedings{marzari2023dnn,
   title={The \#DNN-Verification Problem: Counting Unsafe Inputs for Deep Neural Networks},
   author={Marzari, Luca and Corsi, Davide and Cicalese, Ferdinando and Farinelli, Alessandro},
@@ -124,20 +118,14 @@ If you use our probabilistic framework in your work, please kindly cite our pape
   pages={217--224},
   year={2023}
 }
-```
 
-**[C]** [Scaling #DNN-Verification Tools with Efficient Bound Propagation and Parallel Computing](https://arxiv.org/pdf/2312.05890).  Marzari L., Roncolato G. and Farinelli A. In AIRO 2023
-```
 @incollection{marzari2023scaling,
   title={Scaling \#DNN-Verification Tools with Efficient Bound Propagation and Parallel Computing},
   author={Marzari, Luca and Roncolato, Gabriele and Farinelli, Alessandro},
   booktitle={AIRO 2023 Artificial Intelligence and Robotics 2023},
   year={2023}
 }
-```
 
-**[D]** [Enumerating safe regions in deep neural networks with provable probabilistic guarantees](https://ojs.aaai.org/index.php/AAAI/article/view/30134).  Marzari L., Corsi D., Marchesini E., Farinelli A. and Cicalese F. In AAAI 2024
-```
 @inproceedings{marzari2024enumerating,
   title={Enumerating safe regions in deep neural networks with provable probabilistic guarantees},
   author={Marzari, Luca and Corsi, Davide and Marchesini, Enrico and Farinelli, Alessandro and Cicalese, Ferdinando},
@@ -147,10 +135,7 @@ If you use our probabilistic framework in your work, please kindly cite our pape
   pages={21387--21394},
   year={2024}
 }
-```
 
-**[E]** [On the Probabilistic Learnability of Compact Neural Network Preimage Bounds](https://ojs.aaai.org/index.php/AAAI/article/view/30134).  Marzari L., Bicego M., Cicalese F. and Farinelli A. In AAAI 2026
-```
 @inproceedings{marzari2026enum,
   title={On the Probabilistic Learnability of Compact Neural Network Preimage Bounds},
   author={Marzari, Luca and Bicego, Manuele and Cicalese, Ferdinando and Farinelli, Alessandro},
