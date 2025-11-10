@@ -466,12 +466,9 @@ def main():
     
     run_mode, save_path, file_root, example_idx_list, model_ori, vnnlib_all, shape = parse_run_mode()
 
-    print(vnnlib_all)
-    print()
-    quit()
 
     #cartpole
-    #vnnlib_all[0][0][0][3] = [-2.0, 0.0]
+    vnnlib_all[0][0][0][3] = [-2.0, 0.0]
 
     # lunar
     #vnnlib_all[0][0][0][3] = [-4.0, 0.0]
