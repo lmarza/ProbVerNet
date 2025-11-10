@@ -2,7 +2,7 @@
 A unified deep neural networks probabilistic verification framework. ProbVerNet provides a suite of tools to both probabilistically verify the neural network's robustness to adversarial pertubation and approximately compute the preimage bounds of neural networks, i.e., to enumerate all the input regions where a specified property holds. The framework is currently under construction. 
 
 
-## Available Algorithms ✅
+## Supported Features ✅
 
 <p align="center">
 <img src="overview.png" width="100%">
