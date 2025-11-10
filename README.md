@@ -15,12 +15,8 @@ It consists of two main folders:
 
 ## 1. Installation
 
-To install all required dependencies, create a virtual environment using your preferred tool (e.g., Conda, `venv`, etc.).
-
-### Example using pip:
-
-cd premap
-> pip install -r requirements.txt
+To install all required dependencies, create a virtual environment using your preferred tool (e.g., Conda, `venv`, etc.) using the environment.yaml provided in the main branch.
+> conda activate prob-ver
 
 ### Troubleshooting
 
@@ -28,7 +24,7 @@ cd premap
   - Try editing the `requirements.txt` to specify a compatible version.
   - Alternatively, install all other packages first, then install the problematic one manually.
 
-- For more information, refer to the original PREMAP repository:  
+- For more information about premap code, refer to the original PREMAP repository:  
   👉 https://github.com/Zhang-Xiyue/PreimageApproxForNNs
 
 ---
@@ -36,10 +32,6 @@ cd premap
 ## 2. Reproducing PREMAP Results
 
 Once your environment is set up:
-
-> conda activate premap  #or your chosen environment
-
-> pip install scikit-learn
 
 > cd src
 
