@@ -8,19 +8,10 @@ Identifying safe areas is a key point to guarantee trust for systems that are ba
 ## Installation and Setup
 
 eProVe is tested on Python 3.8+ and PyTorch 2.x. It can be installed
-easily into a conda environment. If you don't have conda, you can install
-[miniconda](https://docs.conda.io/en/latest/miniconda.html).
+easily into a conda environment using the environment.yaml provided in the main branch.
 
 ```bash
-# Remove the old environment, if necessary.
-conda deactivate; conda env remove -n eProVe
-# Create a new conda environment
-conda create -n eProVe python=3.11
-# Activate the environment
-conda activate eProVe
-# Install PyTorch and TQDM
-pip3 install torch torchvision torchaudio
-pip3 install tqdm
+conda activate prob-ver
 ```
 
 *NB: if you want to install a specific version of PyTorch (e.g., GPU, Windows, or Mac), please refer to the official installation page ([here](https://pytorch.org)).*
@@ -28,7 +19,6 @@ pip3 install tqdm
 ## Reproduce the results of the paper
 To run the default experiments and reproduce the results described in the paper, run the following command:
 ```bash
-conda activate eProVe
 python3 main_paper.py
 ```
 
