@@ -23,10 +23,10 @@ pip3 install torch torchvision torchaudio
 pip3 install tqdm
 ```
 
-*NB: if you want to install a specific version of PyTorch (e.g., GPU, Windows, or Mac), please refer to the offical installation page ([here](https://pytorch.org)).*
+*NB: if you want to install a specific version of PyTorch (e.g., GPU, Windows, or Mac), please refer to the official installation page ([here](https://pytorch.org)).*
 
-## Reproduce the results of the paper [1]
-To run the deafault experiments and reproduce the results described inside the Paper, run the following command:
+## Reproduce the results of the paper
+To run the default experiments and reproduce the results described in the paper, run the following command:
 ```bash
 conda activate eProVe
 python3 main_paper.py
@@ -35,7 +35,7 @@ python3 main_paper.py
 The results will be stored in a csv file named *'full_results.csv'*.
 
 ## Custom properties
-To run a custom property on a custom neural network please modify the main file at *'main.py'*, copy your torch model inside the folder *'models/'* and run the command:
+To run a custom property on a custom neural network, please modify the main file at *'main.py'*, copy your torch model inside the folder *'models/'* and run the command:
 ```bash
 conda activate eProVe
 python3 main.py
@@ -45,10 +45,10 @@ python3 main.py
 eProVe will use the default parameters for the analysis; you can change them when creating the eProVe object: 
 ```python
 from scripts.eProVe import eProVe
-prove = eProVe( network, domain, point_cloud=3500, *args  )
+prove = eProVe(network, domain, point_cloud=3500, *args)
 ```
 
-List of the available parameters (with the default paramters):
+List of the available parameters (with the default parameters):
 ```python
 point_cloud=3500
 max_depth=18 
@@ -61,7 +61,7 @@ from scripts.eProVe import eProVe
 prove = eProVe( network, domain, split_node_heu="distr", *args  )
 ```
 
-List of the available heuristics (with the default paramters):
+List of the available heuristics (with the default parameters):
 ```python
 split_node_heu = "distr"
 split_pos_heu = "distr"
@@ -70,22 +70,22 @@ split_pos_heu = "distr"
 Following a list of the valid options, please refer to the main paper [1] for a complete description of the approaches:
 ```python
 #####
-## split_node_heu: to decide which node should be splitted for the iterative refinement loop.
+## split_node_heu: to decide which node should be split for the iterative refinement loop.
 #####
 split_node_heu = "rand" # i.e., random choice
 split_node_heu = "size" # i.e., always select the node with the largest interval size
-split_node_heu = "distr" # i.e., select the node that maximize the unsafe portion of the area (please refer to the main paper for details [1])
+split_node_heu = "distr" # i.e., select the node that maximizes the unsafe portion of the area (please refer to the main paper for details [1])
 
 #####
-## split_pos_heu: to decide where the selected node should be splitted.
+## split_pos_heu: to decide where the selected node should be split.
 #####
 split_pos_heu = "median" # i.e., select the median value based on the point cloud collected
-split_pos_heu = "mean" # i.e., always split the interval into two equals portion
+split_pos_heu = "mean" # i.e., always split the interval into two equal portions
 split_pos_heu = "distr" # i.e., select the position in the interval that maximizes the unsafe portion of the area (please refer to the main paper for details [1])
 ```
 
 ### Models
-All the neural networks in inputs must be in PyTorch standard format. The models must have a single output, a positive output means that the neural network is safe. Please refer to the main paper [1] for a detailed explanation of how a general safety property can be converted into the correct format.
+All the neural networks to be verified must be in PyTorch standard format. The models must have a single output, a positive output means that the neural network is safe. Please refer to the main paper for a detailed explanation of how a general safety property can be converted into the correct format.
 
 
 ## Contributors
