@@ -1,0 +1,26 @@
+model:
+  name: "lunarlander.pt"
+  
+specification:
+  input_domain: [
+            [-1. ,  0. ],  # pos x
+            [ 0. ,  1. ],  # pos y
+            [ 0. ,  2. ],  # linear velocity x
+            [-4. ,  0. ],  # linear velocity y #here
+            [-1. ,  0. ],  # angle
+            [-0.1,  0.1],  # angular velocity
+            [ 0.9,  1. ],  # boolean 
+            [ 0.9,  1. ]   # boolean 
+       ]
+
+  desired_coverage: 75
+
+e_prove_params:
+  seeds: [0,1,2]
+  delta: 0.01
+  R: 0.05
+  wilks_samples: 1000
+  verbose: True
+  
+  
+

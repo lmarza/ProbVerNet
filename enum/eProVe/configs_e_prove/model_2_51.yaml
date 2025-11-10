@@ -1,0 +1,17 @@
+model:
+  name: "model_2_0.51.pth"
+
+specification:
+  input_domain: [[0.,  1.],
+                [ 0.,  1.]]
+
+  desired_coverage: 99
+
+e_prove_params:
+  seeds: [1]
+  delta: 0.01
+  R: 0.05
+  wilks_samples: 3500
+  verbose: True
+  
+

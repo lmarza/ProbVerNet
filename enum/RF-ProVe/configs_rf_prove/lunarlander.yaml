@@ -1,0 +1,31 @@
+model:
+  name: "lunarlander.pt"
+  
+specification:
+  input_domain: [
+            [-1. ,  0. ],  # pos x
+            [ 0. ,  1. ],  # pos y
+            [ 0. ,  2. ],  # linear velocity x
+            [-4. ,  0. ],  # linear velocity y #here
+            [-1. ,  0. ],  # angle
+            [-0.1,  0.1],  # angular velocity
+            [ 0.9,  1. ],  # boolean 
+            [ 0.9,  1. ]   # boolean 
+       ]
+
+  desired_coverage: 75
+
+rf_prove_params:
+  seeds: [1,2,3]
+  delta: 0.01
+  R: 0.05
+  training_samples: 20_000
+  n_decision_trees: 5_000
+  max_depth: 5
+  digits_to_consider: 0 # set to 0 for no rounding
+  heuristic_rf: 'gini'
+  wilks_samples: 1000
+  sample_size_evaluation: 10_000
+  verbose: True
+  
+
