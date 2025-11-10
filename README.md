@@ -4,6 +4,9 @@ A unified deep neural networks probabilistic verification framework. ProbVerNet 
 
 ## Available Algorithms ✅
 
+<p align="center">
+<img src="overview.png" width="100%">
+</p>
 
 - [ ] **PT-LiRPA** ([Marzari et al., und.review JAIR 2025](https://arxiv.org/pdf/2507.05405)): Probabilistically Tightened Linear Relaxation-based Perturbation Analysis, a novel probabilistic framework that combines over-approximation techniques from LiRPA-based approaches with a sampling-based method to compute tight intermediate reachable sets, significantly tightening the lower and upper linear bounds of a neural network's output and reducing the computational cost of formal verification tools while providing probabilistic guarantees on verification soundness (integration with the framework coming soon).
 - [ ] **CountingProVe** ([Marzari et al., IJCAI 2023](https://dl.acm.org/doi/abs/10.24963/ijcai.2023/25)): Approximate count method with probabilistic guarantees on the interval of violation rate present in the property's domain (integration with the framework coming soon).
@@ -98,6 +101,21 @@ cd eProVe
 python e_prove.py --config_path "configs_e_prove/cartpole.yaml" # for ε-ProVe
 ```
 
+## Reproduce the paper results 🧐
+
+To ensure full reproducibility of our experimental results, we provide dedicated branches for each paper release. All code, configuration files, and detailed instructions to reproduce the results are available in the following.
+
+**PT-LiRPA** ([Marzari et al., und.review JAIR 2025](https://arxiv.org/pdf/2507.05405)) 👉 coming soon
+
+**CountingProVe** ([Marzari et al., IJCAI 2023](https://dl.acm.org/doi/abs/10.24963/ijcai.2023/25)) 👉 coming soon
+
+**ϵ-ProVe** ([Marzari et al., AAAI 2024](https://ojs.aaai.org/index.php/AAAI/article/view/30134)) 👉 [**AAAI24**](https://github.com/lmarza/ProbVerNet/tree/AAAI24)
+
+**RF-ProVe** ([Marzari et al., AAAI 2026]()) 👉 [**AAAI26**](https://github.com/lmarza/ProbVerNet/tree/AAAI26)
+
+---
+
+Each branch is self-contained and designed to enable full reproducibility of the reported results.
 
 
 ## Reference 📚
