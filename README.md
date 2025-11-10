@@ -7,7 +7,7 @@ This repository includes the code to reproduce results for the following methods
 
 It consists of two main folders:
 - `RF-ProVe/`
-- `PreimageApproxForNNs/`
+- `premap/`
 
 > ℹ️ For the **Exact method** from Matoba and Fleuret (2020), please refer to the original publication and implementation.
 
@@ -19,7 +19,7 @@ To install all required dependencies, create a virtual environment using your pr
 
 ### Example using pip:
 
-cd PreimageApproxForNNs
+cd premap
 > pip install -r requirements.txt
 
 ### Troubleshooting

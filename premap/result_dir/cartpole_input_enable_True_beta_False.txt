@@ -1,0 +1,14 @@
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 66, Time: 25.512, Coverage: 0.752 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 24, Time: 5.488, Coverage: 0.752 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 24, Time: 5.517, Coverage: 0.752 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 106, Time: 17.919, Coverage: 0.950 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 5, Time: 2.766, Coverage: 0.122 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 24, Time: 5.426, Coverage: 0.752 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 1, Time: 1.426, Coverage: 0.786 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 24, Time: 5.846, Coverage: 0.752 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 24, Time: 5.558, Coverage: 0.752 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 58, Time: 10.706, Coverage: 0.903 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 58, Time: 11.073, Coverage: 0.903 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 189, Time: 30.709, Coverage: 0.901 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 66, Time: 19.896, Coverage: 0.752 
+cartpole, Over False, Under True, Spec 0, Runner 0, -- #Subdomain: 66, Time: 12.075, Coverage: 0.752 
