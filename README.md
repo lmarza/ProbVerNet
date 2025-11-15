@@ -11,7 +11,7 @@ A unified deep neural networks probabilistic verification framework. ProbVerNet 
 - [ ] **PT-LiRPA** ([Marzari et al., und.review JAIR 2025](https://arxiv.org/pdf/2507.05405)): Probabilistically Tightened Linear Relaxation-based Perturbation Analysis, a novel probabilistic framework that combines over-approximation techniques from LiRPA-based approaches with a sampling-based method to compute tight intermediate reachable sets, significantly tightening the lower and upper linear bounds of a neural network's output and reducing the computational cost of formal verification tools while providing probabilistic guarantees on verification soundness (integration with the framework coming soon).
 - [ ] **CountingProVe** ([Marzari et al., IJCAI 2023](https://dl.acm.org/doi/abs/10.24963/ijcai.2023/25)): Approximate count method with probabilistic guarantees on the interval of violation rate present in the property's domain (integration with the framework coming soon).
 - [x] **ϵ-ProVe** ([Marzari et al., AAAI 2024](https://ojs.aaai.org/index.php/AAAI/article/view/30134)): Efficient approximate enumeration strategy with tight probabilistic guarantees for enumerating all the (un)safe regions of the property's domain for a given safety property. 
-- [x] **RF-ProVe** ([Marzari et al., AAAI 2026]()): Compact probabilistic enumeration of preimage bounds of neural networks with guarantees on the coverage and bounded error of the solution returned.
+- [x] **RF-ProVe** ([Marzari et al., AAAI 2026](https://lmarza.github.io/assets/pdf/aaai26.pdf)): Compact probabilistic enumeration of preimage bounds of neural networks with guarantees on the coverage and bounded error of the solution returned.
 
 ## Installation 
 
@@ -111,7 +111,7 @@ To ensure full reproducibility of our experimental results, we provide dedicated
 
 **ϵ-ProVe** ([Marzari et al., AAAI 2024](https://ojs.aaai.org/index.php/AAAI/article/view/30134)) 👉 [**AAAI24**](https://github.com/lmarza/ProbVerNet/tree/AAAI24)
 
-**RF-ProVe** ([Marzari et al., AAAI 2026]()) 👉 [**AAAI26**](https://github.com/lmarza/ProbVerNet/tree/AAAI26)
+**RF-ProVe** ([Marzari et al., AAAI 2026](https://lmarza.github.io/assets/pdf/aaai26.pdf)) 👉 [**AAAI26**](https://github.com/lmarza/ProbVerNet/tree/AAAI26)
 
 ---
 
