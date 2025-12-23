@@ -4,3 +4,4 @@ alpha-beta-CROWN/vnncomp_scripts filter=lfs diff=lfs merge=lfs -text
 alpha-beta-CROWN/auto_LiRPA filter=lfs diff=lfs merge=lfs -text
 alpha-beta-CROWN/complete_verifier filter=lfs diff=lfs merge=lfs -text
 alpha-beta-CROWN/** filter=lfs diff=lfs merge=lfs -text
+max_eps_perturbation/** filter=lfs diff=lfs merge=lfs -text
