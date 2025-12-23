@@ -1,0 +1,4069 @@
+Configurations:
+
+general:
+  device: cuda
+  seed: 100
+  conv_mode: matrix
+  deterministic: false
+  double_fp: false
+  loss_reduction_func: sum
+  sparse_alpha: true
+  sparse_interm: true
+  save_adv_example: false
+  eval_adv_example: false
+  show_adv_example: false
+  precompile_jit: false
+  complete_verifier: bab
+  enable_incomplete_verification: false
+  csv_name: instances.csv
+  results_file: out.txt
+  root_path: ../../vnncomp2023_benchmarks/benchmarks/tllverifybench
+  deterministic_opt: false
+  graph_optimizer: 'Customized("custom_graph_optimizer", "default_optimizer")'
+  buffer_has_batchdim: false
+  save_output: false
+  output_file: out.pkl
+  return_optimized_model: false
+  use_pt_lirpa: true
+  use_pt_attack: true
+  compute_linear_bounds: false
+model:
+  name: null
+  path: null
+  onnx_path: null
+  onnx_path_prefix: ''
+  cache_onnx_conversion: false
+  debug_onnx: false
+  onnx_quirks: null
+  input_shape: null
+  onnx_loader: default_onnx_and_vnnlib_loader
+  onnx_optimization_flags: merge_linear
+  onnx_vnnlib_joint_optimization_flags: none
+  check_optmized: false
+  flatten_final_output: false
+  optimize_graph: null
+  with_jacobian: false
+data:
+  start: 0
+  end: 10000
+  select_instance: null
+  num_outputs: 10
+  mean: 0.0
+  std: 1.0
+  pkl_path: null
+  dataset: null
+  data_filter_path: null
+  data_idx_file: null
+specification:
+  type: lp
+  robustness_type: verified-acc
+  norm: .inf
+  epsilon: null
+  epsilon_min: 0.0
+  vnnlib_path: null
+  vnnlib_path_prefix: ''
+  rhs_offset: null
+solver:
+  batch_size: 1500
+  auto_enlarge_batch_size: false
+  min_batch_size_ratio: 0.1
+  use_float64_in_last_iteration: false
+  early_stop_patience: 10
+  start_save_best: 0.5
+  bound_prop_method: forward+backward
+  init_bound_prop_method: same
+  prune_after_crown: false
+  optimize_disjuncts_separately: false
+  crown:
+    batch_size: 1000000000
+    max_crown_size: 1000000000
+    relu_option: adaptive
+  alpha-crown:
+    alpha: true
+    lr_alpha: 0.1
+    iteration: 100
+    share_alphas: false
+    lr_decay: 0.98
+    full_conv_alpha: true
+    max_coeff_mul: .inf
+    matmul_share_alphas: false
+    disable_optimization: []
+  invprop:
+    apply_output_constraints_to: []
+    tighten_input_bounds: false
+    best_of_oc_and_no_oc: false
+    directly_optimize: []
+    oc_lr: 0.1
+    share_gammas: false
+  beta-crown:
+    lr_alpha: 0.01
+    lr_beta: 0.05
+    lr_decay: 0.98
+    optimizer: adam
+    iteration: 10
+    beta: true
+    beta_warmup: true
+    enable_opt_interm_bounds: false
+    all_node_split_LP: false
+  forward:
+    refine: false
+    dynamic: false
+    max_dim: 10000
+    reset_threshold: 1.0
+  multi_class:
+    label_batch_size: 32
+    skip_with_refined_bound: true
+  mip:
+    parallel_solvers: null
+    solver_threads: 1
+    refine_neuron_timeout: 15
+    refine_neuron_time_percentage: 0.8
+    early_stop: true
+    adv_warmup: true
+    mip_solver: gurobi
+    skip_unsafe: false
+bab:
+  initial_max_domains: 1
+  max_domains: .inf
+  decision_thresh: 0
+  timeout: 360
+  timeout_scale: 1
+  max_iterations: -1
+  override_timeout: null
+  get_upper_bound: false
+  pruning_in_iteration: true
+  pruning_in_iteration_ratio: 0.2
+  sort_targets: false
+  batched_domain_list: true
+  optimized_interm: ''
+  interm_transfer: true
+  recompute_interm: false
+  sort_domain_interval: -1
+  vanilla_crown: false
+  cut:
+    enabled: false
+    implication: false
+    bab_cut: false
+    lp_cut: false
+    method: null
+    lr: 0.01
+    lr_decay: 1.0
+    iteration: 100
+    bab_iteration: -1
+    early_stop_patience: -1
+    lr_beta: 0.02
+    number_cuts: 50
+    topk_cuts_in_filter: 1000
+    batch_size_primal: 100
+    max_num: 1000000000
+    patches_cut: false
+    cplex_cuts: false
+    cplex_cuts_wait: 0
+    cplex_cuts_revpickup: true
+    cut_reference_bounds: true
+    fix_intermediate_bounds: false
+  branching:
+    method: naive
+    candidates: 3
+    reduceop: min
+    enable_intermediate_bound_opt: false
+    branching_input_and_activation: false
+    branching_input_and_activation_order: [input, relu]
+    branching_input_iterations: 30
+    branching_relu_iterations: 50
+    nonlinear_split:
+      method: shortcut
+      branching_point_method: uniform
+      num_branches: 2
+      filter: false
+      filter_beta: false
+      filter_batch_size: 10000
+      filter_iterations: 25
+      use_min: false
+      loose_tanh_threshold: null
+      dynamic_bbps: false
+      dynamic_options: [uniform, three_left, three_right]
+    input_split:
+      enable: true
+      enhanced_bound_prop_method: alpha-crown
+      enhanced_branching_method: naive
+      enhanced_bound_patience: 100000000.0
+      attack_patience: 100000000.0
+      adv_check: 0
+      split_partitions: 2
+      sb_margin_weight: 1.0
+      sb_sum: false
+      bf_backup_thresh: -1
+      bf_rhs_offset: 0
+      bf_iters: 1000000000.0
+      bf_batch_size: 100000
+      bf_zero_crossing_score: false
+      touch_zero_score: 0
+      ibp_enhancement: false
+      catch_assertion: false
+      compare_with_old_bounds: false
+      update_rhs_with_attack: false
+      sb_coeff_thresh: 0.001
+      sort_index: null
+      sort_descending: true
+      show_progress: false
+  attack:
+    enabled: false
+    beam_candidates: 8
+    beam_depth: 7
+    max_dive_fix_ratio: 0.8
+    min_local_free_ratio: 0.2
+    mip_start_iteration: 5
+    mip_timeout: 30.0
+    adv_pool_threshold: null
+    refined_mip_attacker: false
+    refined_batch_size: null
+attack:
+  pgd_order: before
+  pgd_steps: 100
+  pgd_restarts: 30
+  pgd_batch_size: 100000000
+  pgd_early_stop: true
+  pgd_lr_decay: 0.99
+  pgd_alpha: auto
+  pgd_alpha_scale: false
+  pgd_loss_mode: null
+  enable_mip_attack: false
+  adv_saver: default_adv_saver
+  early_stop_condition: default_early_stop_condition
+  adv_example_finalizer: default_adv_example_finalizer
+  pgd_loss: default_pgd_loss
+  cex_path: ./test_cex.txt
+  attack_mode: PGD
+  attack_tolerance: 0.0
+  attack_func: attack_with_general_specs
+  gama_lambda: 10.0
+  gama_decay: 0.9
+  check_clean: false
+  input_split:
+    pgd_steps: 100
+    pgd_restarts: 30
+    pgd_alpha: auto
+  input_split_enhanced:
+    pgd_steps: 200
+    pgd_restarts: 500000
+    pgd_alpha: auto
+  input_split_check_adv:
+    pgd_steps: 5
+    pgd_restarts: 5
+    pgd_alpha: auto
+    max_num_domains: 10
+debug:
+  view_model: false
+  lp_test: null
+  rescale_vnnlib_ptb: null
+  test_optimized_bounds: false
+  test_optimized_bounds_after_n_iterations: 0
+  print_verbose_decisions: false
+
+Experiments at Thu Sep 19 20:37:39 2024 on mrwolf
+no customized start/end sample, testing all samples in instances.csv
+Internal results will be saved to out.txt.
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 0, vnnlib ID: 0 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=8_m=1_instance_0_0.onnx
+Using vnnlib vnnlib/property_N=8_0.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=8_0.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=8_m=1_instance_0_0.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=8_m=1_instance_0_0.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-0.99824214]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[2.27120829]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[2.71565962]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.7483 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 598.9140903949738
+##### Instance 0 first 10 spec matrices: 
+tensor([[[-1.]]], dtype=torch.float64)
+thresholds: tensor([-4.98686790], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/15): BoundParams(name=/15, inputs=[], perturbed=False)
+  (/16): BoundParams(name=/16, inputs=[], perturbed=False)
+  (/17): BoundParams(name=/17, inputs=[], perturbed=False)
+  (/18): BoundParams(name=/18, inputs=[], perturbed=False)
+  (/19): BoundParams(name=/19, inputs=[], perturbed=False)
+  (/20): BoundParams(name=/20, inputs=[], perturbed=False)
+  (/21): BoundParams(name=/21, inputs=[], perturbed=False)
+  (/22): BoundParams(name=/22, inputs=[], perturbed=False)
+  (/23): BoundParams(name=/23, inputs=[], perturbed=False)
+  (/24): BoundParams(name=/24, inputs=[], perturbed=False)
+  (/25): BoundParams(name=/25, inputs=[], perturbed=False)
+  (/26): BoundParams(name=/26, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /15, /16], perturbed=False)
+  (/30): BoundRelu(name=/30, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/30, /17, /18], perturbed=False)
+  (/32): BoundRelu(name=/32, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/32, /19, /20], perturbed=False)
+  (/34): BoundRelu(name=/34, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/34, /21, /22], perturbed=False)
+  (/36): BoundRelu(name=/36, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/36, /23, /24], perturbed=False)
+  (/38): BoundRelu(name=/38, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/38, /25, /26], perturbed=False)
+  (/40): BoundRelu(name=/40, inputs=[/input.19], perturbed=False)
+  (/41): BoundLinear(name=/41, inputs=[/40, /27, /28], perturbed=False)
+)
+Model prediction is: tensor([-0.99824214], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /15, /16], perturbed=True): [(BoundRelu(name=/30, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/30, /17, /18], perturbed=True): [(BoundRelu(name=/32, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/32, /19, /20], perturbed=True): [(BoundRelu(name=/34, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/34, /21, /22], perturbed=True): [(BoundRelu(name=/36, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/36, /23, /24], perturbed=True): [(BoundRelu(name=/38, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/38, /25, /26], perturbed=True): [(BoundRelu(name=/40, inputs=[/input.19], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/30, inputs=[/input], perturbed=True)
+   BoundRelu(name=/32, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/34, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/36, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/38, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/40, inputs=[/input.19], perturbed=True)
+initial forward+backward bounds: tensor([[-20.93412399]], device='cuda:0')
+Worst class: (+ rhs) -20.934123992919922
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-153.90267944], device='cuda:0')
+Total time: 0.0191  pickout: 0.0003 decision: 0.0015  bounding: 0.0168 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -153.90267944335938
+Cumulative time: 0.40819573402404785
+
+Iteration 2
+Adv attack time: 0.0130s
+Batch size: 1500
+Worst bound: tensor([-78.04624939], device='cuda:0')
+Total time: 0.0103  pickout: 0.0002 decision: 0.0011  bounding: 0.0085 add_domain: 0.0005
+Length of domains: 12
+20 branch and bound domains visited
+Current (lb-rhs): -78.04624938964844
+Cumulative time: 0.4320950508117676
+
+Iteration 3
+Adv attack time: 0.0121s
+Batch size: 1500
+Worst bound: tensor([-24.11227798], device='cuda:0')
+Total time: 0.0152  pickout: 0.0002 decision: 0.0011  bounding: 0.0135 add_domain: 0.0005
+Length of domains: 18
+68 branch and bound domains visited
+Current (lb-rhs): -24.11227798461914
+Cumulative time: 0.45985984802246094
+
+Iteration 4
+Adv attack time: 0.0116s
+Batch size: 1500
+Worst bound: tensor([-2.67847681], device='cuda:0')
+Total time: 0.0101  pickout: 0.0002 decision: 0.0011  bounding: 0.0084 add_domain: 0.0005
+Length of domains: 8
+140 branch and bound domains visited
+Current (lb-rhs): -2.6784768104553223
+Cumulative time: 0.4817657470703125
+
+Iteration 5
+Adv attack time: 0.0117s
+Batch size: 1500
+Worst bound: tensor([1.29108977], device='cuda:0')
+Total time: 0.0100  pickout: 0.0002 decision: 0.0011  bounding: 0.0084 add_domain: 0.0002
+Length of domains: 0
+172 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is -3.6957781314849854
+Cumulative time: 0.503471851348877
+
+Result: safe in 1.7542 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 1, vnnlib ID: 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=8_m=1_instance_0_1.onnx
+Using vnnlib vnnlib/property_N=8_1.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=8_1.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=8_m=1_instance_0_1.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=8_m=1_instance_0_1.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-0.23474252]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-8.62895966]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[15.92734146]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.1799 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 599.7893671989441
+##### Instance 1 first 10 spec matrices: 
+tensor([[[1.]]], dtype=torch.float64)
+thresholds: tensor([-24.55630112], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/15): BoundParams(name=/15, inputs=[], perturbed=False)
+  (/16): BoundParams(name=/16, inputs=[], perturbed=False)
+  (/17): BoundParams(name=/17, inputs=[], perturbed=False)
+  (/18): BoundParams(name=/18, inputs=[], perturbed=False)
+  (/19): BoundParams(name=/19, inputs=[], perturbed=False)
+  (/20): BoundParams(name=/20, inputs=[], perturbed=False)
+  (/21): BoundParams(name=/21, inputs=[], perturbed=False)
+  (/22): BoundParams(name=/22, inputs=[], perturbed=False)
+  (/23): BoundParams(name=/23, inputs=[], perturbed=False)
+  (/24): BoundParams(name=/24, inputs=[], perturbed=False)
+  (/25): BoundParams(name=/25, inputs=[], perturbed=False)
+  (/26): BoundParams(name=/26, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /15, /16], perturbed=False)
+  (/30): BoundRelu(name=/30, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/30, /17, /18], perturbed=False)
+  (/32): BoundRelu(name=/32, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/32, /19, /20], perturbed=False)
+  (/34): BoundRelu(name=/34, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/34, /21, /22], perturbed=False)
+  (/36): BoundRelu(name=/36, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/36, /23, /24], perturbed=False)
+  (/38): BoundRelu(name=/38, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/38, /25, /26], perturbed=False)
+  (/40): BoundRelu(name=/40, inputs=[/input.19], perturbed=False)
+  (/41): BoundLinear(name=/41, inputs=[/40, /27, /28], perturbed=False)
+)
+Model prediction is: tensor([-0.23474252], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /15, /16], perturbed=True): [(BoundRelu(name=/30, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/30, /17, /18], perturbed=True): [(BoundRelu(name=/32, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/32, /19, /20], perturbed=True): [(BoundRelu(name=/34, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/34, /21, /22], perturbed=True): [(BoundRelu(name=/36, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/36, /23, /24], perturbed=True): [(BoundRelu(name=/38, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/38, /25, /26], perturbed=True): [(BoundRelu(name=/40, inputs=[/input.19], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/30, inputs=[/input], perturbed=True)
+   BoundRelu(name=/32, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/34, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/36, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/38, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/40, inputs=[/input.19], perturbed=True)
+initial forward+backward bounds: tensor([[-99.72664642]], device='cuda:0')
+Worst class: (+ rhs) -99.72664642333984
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-634.63055420], device='cuda:0')
+Total time: 0.0100  pickout: 0.0002 decision: 0.0012  bounding: 0.0081 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -634.6305541992188
+Cumulative time: 0.036568403244018555
+
+Iteration 2
+Adv attack time: 0.0122s
+Batch size: 1500
+Worst bound: tensor([-319.82482910], device='cuda:0')
+Total time: 0.0099  pickout: 0.0002 decision: 0.0011  bounding: 0.0081 add_domain: 0.0005
+Length of domains: 14
+20 branch and bound domains visited
+Current (lb-rhs): -319.8248291015625
+Cumulative time: 0.059104204177856445
+
+Iteration 3
+Adv attack time: 0.0118s
+Batch size: 1500
+Worst bound: tensor([-155.91848755], device='cuda:0')
+Total time: 0.0101  pickout: 0.0002 decision: 0.0011  bounding: 0.0083 add_domain: 0.0005
+Length of domains: 15
+76 branch and bound domains visited
+Current (lb-rhs): -155.91848754882812
+Cumulative time: 0.08141255378723145
+
+Iteration 4
+Adv attack time: 0.0116s
+Batch size: 1500
+Worst bound: tensor([-64.98428345], device='cuda:0')
+Total time: 0.0101  pickout: 0.0002 decision: 0.0011  bounding: 0.0083 add_domain: 0.0005
+Length of domains: 8
+136 branch and bound domains visited
+Current (lb-rhs): -64.98428344726562
+Cumulative time: 0.10325288772583008
+
+Iteration 5
+Adv attack time: 0.0158s
+Batch size: 1500
+Worst bound: tensor([-14.71998215], device='cuda:0')
+Total time: 0.0105  pickout: 0.0002 decision: 0.0011  bounding: 0.0087 add_domain: 0.0005
+Length of domains: 3
+168 branch and bound domains visited
+Current (lb-rhs): -14.719982147216797
+Cumulative time: 0.12974143028259277
+
+Iteration 6
+Adv attack time: 0.0118s
+Batch size: 1500
+Worst bound: tensor([12.47523308], device='cuda:0')
+Total time: 0.0100  pickout: 0.0002 decision: 0.0011  bounding: 0.0084 add_domain: 0.0002
+Length of domains: 0
+180 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is -12.08106803894043
+Cumulative time: 0.15162301063537598
+
+Result: safe in 0.4701 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 2, vnnlib ID: 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=8_m=1_instance_0_2.onnx
+Using vnnlib vnnlib/property_N=8_2.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=8_2.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=8_m=1_instance_0_2.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=8_m=1_instance_0_2.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 0.0092 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 3, vnnlib ID: 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=8_m=1_instance_0_3.onnx
+Using vnnlib vnnlib/property_N=8_3.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=8_3.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=8_m=1_instance_0_3.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=8_m=1_instance_0_3.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[0.67583525]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-3.04154396]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[2.47421932]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.1807 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 599.7905485630035
+##### Instance 3 first 10 spec matrices: 
+tensor([[[1.]]], dtype=torch.float64)
+thresholds: tensor([-5.51576328], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/15): BoundParams(name=/15, inputs=[], perturbed=False)
+  (/16): BoundParams(name=/16, inputs=[], perturbed=False)
+  (/17): BoundParams(name=/17, inputs=[], perturbed=False)
+  (/18): BoundParams(name=/18, inputs=[], perturbed=False)
+  (/19): BoundParams(name=/19, inputs=[], perturbed=False)
+  (/20): BoundParams(name=/20, inputs=[], perturbed=False)
+  (/21): BoundParams(name=/21, inputs=[], perturbed=False)
+  (/22): BoundParams(name=/22, inputs=[], perturbed=False)
+  (/23): BoundParams(name=/23, inputs=[], perturbed=False)
+  (/24): BoundParams(name=/24, inputs=[], perturbed=False)
+  (/25): BoundParams(name=/25, inputs=[], perturbed=False)
+  (/26): BoundParams(name=/26, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /15, /16], perturbed=False)
+  (/30): BoundRelu(name=/30, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/30, /17, /18], perturbed=False)
+  (/32): BoundRelu(name=/32, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/32, /19, /20], perturbed=False)
+  (/34): BoundRelu(name=/34, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/34, /21, /22], perturbed=False)
+  (/36): BoundRelu(name=/36, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/36, /23, /24], perturbed=False)
+  (/38): BoundRelu(name=/38, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/38, /25, /26], perturbed=False)
+  (/40): BoundRelu(name=/40, inputs=[/input.19], perturbed=False)
+  (/41): BoundLinear(name=/41, inputs=[/40, /27, /28], perturbed=False)
+)
+Model prediction is: tensor([0.67583525], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /15, /16], perturbed=True): [(BoundRelu(name=/30, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/30, /17, /18], perturbed=True): [(BoundRelu(name=/32, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/32, /19, /20], perturbed=True): [(BoundRelu(name=/34, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/34, /21, /22], perturbed=True): [(BoundRelu(name=/36, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/36, /23, /24], perturbed=True): [(BoundRelu(name=/38, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/38, /25, /26], perturbed=True): [(BoundRelu(name=/40, inputs=[/input.19], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/30, inputs=[/input], perturbed=True)
+   BoundRelu(name=/32, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/34, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/36, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/38, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/40, inputs=[/input.19], perturbed=True)
+initial forward+backward bounds: tensor([[-17.08652496]], device='cuda:0')
+Worst class: (+ rhs) -17.086524963378906
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-155.61886597], device='cuda:0')
+Total time: 0.0099  pickout: 0.0002 decision: 0.0012  bounding: 0.0081 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -155.61886596679688
+Cumulative time: 0.03613758087158203
+
+Iteration 2
+Adv attack time: 0.0120s
+Batch size: 1500
+Worst bound: tensor([-65.83736420], device='cuda:0')
+Total time: 0.0099  pickout: 0.0002 decision: 0.0011  bounding: 0.0081 add_domain: 0.0005
+Length of domains: 12
+20 branch and bound domains visited
+Current (lb-rhs): -65.83736419677734
+Cumulative time: 0.05843091011047363
+
+Iteration 3
+Adv attack time: 0.0117s
+Batch size: 1500
+Worst bound: tensor([-19.31488800], device='cuda:0')
+Total time: 0.0099  pickout: 0.0002 decision: 0.0011  bounding: 0.0081 add_domain: 0.0005
+Length of domains: 21
+68 branch and bound domains visited
+Current (lb-rhs): -19.31488800048828
+Cumulative time: 0.08607935905456543
+
+Iteration 4
+Adv attack time: 0.0256s
+Batch size: 1500
+Worst bound: tensor([-6.45716381], device='cuda:0')
+Total time: 0.0102  pickout: 0.0002 decision: 0.0011  bounding: 0.0084 add_domain: 0.0005
+Length of domains: 6
+152 branch and bound domains visited
+Current (lb-rhs): -6.4571638107299805
+Cumulative time: 0.12200307846069336
+
+Iteration 5
+Adv attack time: 0.0118s
+Batch size: 1500
+Worst bound: tensor([2.60241365], device='cuda:0')
+Total time: 0.0099  pickout: 0.0002 decision: 0.0011  bounding: 0.0084 add_domain: 0.0002
+Length of domains: 0
+176 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is -2.9133496284484863
+Cumulative time: 0.1437842845916748
+
+Result: safe in 0.4708 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 4, vnnlib ID: 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=16_m=1_instance_1_0.onnx
+Using vnnlib vnnlib/property_N=16_0.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=16_0.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=16_m=1_instance_1_0.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=16_m=1_instance_1_0.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 0.0401 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 5, vnnlib ID: 5 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=16_m=1_instance_1_1.onnx
+Using vnnlib vnnlib/property_N=16_1.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=16_1.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=16_m=1_instance_1_1.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=16_m=1_instance_1_1.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 0.0374 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 6, vnnlib ID: 6 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=16_m=1_instance_1_2.onnx
+Using vnnlib vnnlib/property_N=16_2.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=16_2.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=16_m=1_instance_1_2.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=16_m=1_instance_1_2.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 0.0373 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 7, vnnlib ID: 7 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=16_m=1_instance_1_3.onnx
+Using vnnlib vnnlib/property_N=16_3.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=16_3.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=16_m=1_instance_1_3.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=16_m=1_instance_1_3.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 0.0379 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 8, vnnlib ID: 8 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=24_m=1_instance_2_0.onnx
+Using vnnlib vnnlib/property_N=24_0.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=24_0.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=24_m=1_instance_2_0.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=24_m=1_instance_2_0.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 0.1798 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 9, vnnlib ID: 9 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=24_m=1_instance_2_1.onnx
+Using vnnlib vnnlib/property_N=24_1.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=24_1.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=24_m=1_instance_2_1.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=24_m=1_instance_2_1.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-0.69800472]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-2.64077473]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[1.52870560]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.2239 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 599.5645294189453
+##### Instance 9 first 10 spec matrices: 
+tensor([[[1.]]], dtype=torch.float64)
+thresholds: tensor([-4.16948032], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/23): BoundParams(name=/23, inputs=[], perturbed=False)
+  (/24): BoundParams(name=/24, inputs=[], perturbed=False)
+  (/25): BoundParams(name=/25, inputs=[], perturbed=False)
+  (/26): BoundParams(name=/26, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/29): BoundParams(name=/29, inputs=[], perturbed=False)
+  (/30): BoundParams(name=/30, inputs=[], perturbed=False)
+  (/31): BoundParams(name=/31, inputs=[], perturbed=False)
+  (/32): BoundParams(name=/32, inputs=[], perturbed=False)
+  (/33): BoundParams(name=/33, inputs=[], perturbed=False)
+  (/34): BoundParams(name=/34, inputs=[], perturbed=False)
+  (/35): BoundParams(name=/35, inputs=[], perturbed=False)
+  (/36): BoundParams(name=/36, inputs=[], perturbed=False)
+  (/37): BoundParams(name=/37, inputs=[], perturbed=False)
+  (/38): BoundParams(name=/38, inputs=[], perturbed=False)
+  (/39): BoundParams(name=/39, inputs=[], perturbed=False)
+  (/40): BoundParams(name=/40, inputs=[], perturbed=False)
+  (/41): BoundParams(name=/41, inputs=[], perturbed=False)
+  (/42): BoundParams(name=/42, inputs=[], perturbed=False)
+  (/43): BoundParams(name=/43, inputs=[], perturbed=False)
+  (/44): BoundParams(name=/44, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /23, /24], perturbed=False)
+  (/46): BoundRelu(name=/46, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/46, /25, /26], perturbed=False)
+  (/48): BoundRelu(name=/48, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/48, /27, /28], perturbed=False)
+  (/50): BoundRelu(name=/50, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/50, /29, /30], perturbed=False)
+  (/52): BoundRelu(name=/52, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/52, /31, /32], perturbed=False)
+  (/54): BoundRelu(name=/54, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/54, /33, /34], perturbed=False)
+  (/56): BoundRelu(name=/56, inputs=[/input.19], perturbed=False)
+  (/input.23): BoundLinear(name=/input.23, inputs=[/56, /35, /36], perturbed=False)
+  (/58): BoundRelu(name=/58, inputs=[/input.23], perturbed=False)
+  (/input.27): BoundLinear(name=/input.27, inputs=[/58, /37, /38], perturbed=False)
+  (/60): BoundRelu(name=/60, inputs=[/input.27], perturbed=False)
+  (/input.31): BoundLinear(name=/input.31, inputs=[/60, /39, /40], perturbed=False)
+  (/62): BoundRelu(name=/62, inputs=[/input.31], perturbed=False)
+  (/input.35): BoundLinear(name=/input.35, inputs=[/62, /41, /42], perturbed=False)
+  (/64): BoundRelu(name=/64, inputs=[/input.35], perturbed=False)
+  (/65): BoundLinear(name=/65, inputs=[/64, /43, /44], perturbed=False)
+)
+Model prediction is: tensor([-0.69800496], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /23, /24], perturbed=True): [(BoundRelu(name=/46, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/46, /25, /26], perturbed=True): [(BoundRelu(name=/48, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/48, /27, /28], perturbed=True): [(BoundRelu(name=/50, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/50, /29, /30], perturbed=True): [(BoundRelu(name=/52, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/52, /31, /32], perturbed=True): [(BoundRelu(name=/54, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/54, /33, /34], perturbed=True): [(BoundRelu(name=/56, inputs=[/input.19], perturbed=True), 0)]
+  BoundLinear(name=/input.23, inputs=[/56, /35, /36], perturbed=True): [(BoundRelu(name=/58, inputs=[/input.23], perturbed=True), 0)]
+  BoundLinear(name=/input.27, inputs=[/58, /37, /38], perturbed=True): [(BoundRelu(name=/60, inputs=[/input.27], perturbed=True), 0)]
+  BoundLinear(name=/input.31, inputs=[/60, /39, /40], perturbed=True): [(BoundRelu(name=/62, inputs=[/input.31], perturbed=True), 0)]
+  BoundLinear(name=/input.35, inputs=[/62, /41, /42], perturbed=True): [(BoundRelu(name=/64, inputs=[/input.35], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/46, inputs=[/input], perturbed=True)
+   BoundRelu(name=/48, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/50, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/52, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/54, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/56, inputs=[/input.19], perturbed=True)
+   BoundRelu(name=/58, inputs=[/input.23], perturbed=True)
+   BoundRelu(name=/60, inputs=[/input.27], perturbed=True)
+   BoundRelu(name=/62, inputs=[/input.31], perturbed=True)
+   BoundRelu(name=/64, inputs=[/input.35], perturbed=True)
+initial forward+backward bounds: tensor([[-5.39582253]], device='cuda:0')
+Worst class: (+ rhs) -5.395822525024414
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-3728.23706055], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0011  bounding: 0.0128 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -3728.237060546875
+Cumulative time: 0.05556917190551758
+
+Iteration 2
+Adv attack time: 0.0150s
+Batch size: 1500
+Worst bound: tensor([-1609.18811035], device='cuda:0')
+Total time: 0.0148  pickout: 0.0002 decision: 0.0011  bounding: 0.0130 add_domain: 0.0005
+Length of domains: 16
+20 branch and bound domains visited
+Current (lb-rhs): -1609.1881103515625
+Cumulative time: 0.08583807945251465
+
+Iteration 3
+Adv attack time: 0.0142s
+Batch size: 1500
+Worst bound: tensor([-581.54913330], device='cuda:0')
+Total time: 0.0158  pickout: 0.0002 decision: 0.0011  bounding: 0.0141 add_domain: 0.0005
+Length of domains: 61
+84 branch and bound domains visited
+Current (lb-rhs): -581.5491333007812
+Cumulative time: 0.11631464958190918
+
+Iteration 4
+Adv attack time: 0.0140s
+Batch size: 1500
+Worst bound: tensor([-458.88806152], device='cuda:0')
+Total time: 0.0151  pickout: 0.0002 decision: 0.0006  bounding: 0.0138 add_domain: 0.0005
+Length of domains: 105
+206 branch and bound domains visited
+Current (lb-rhs): -458.8880615234375
+Cumulative time: 0.14557456970214844
+
+Iteration 5
+Adv attack time: 0.0140s
+Batch size: 1500
+Worst bound: tensor([-256.42962646], device='cuda:0')
+Total time: 0.0174  pickout: 0.0002 decision: 0.0006  bounding: 0.0161 add_domain: 0.0005
+Length of domains: 93
+416 branch and bound domains visited
+Current (lb-rhs): -256.42962646484375
+Cumulative time: 0.17748785018920898
+
+Iteration 6
+Adv attack time: 0.0142s
+Batch size: 1500
+Worst bound: tensor([-168.57641602], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0006  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 92
+602 branch and bound domains visited
+Current (lb-rhs): -168.576416015625
+Cumulative time: 0.20651507377624512
+
+Iteration 7
+Adv attack time: 0.0140s
+Batch size: 1500
+Worst bound: tensor([-87.54582214], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0006  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 120
+786 branch and bound domains visited
+Current (lb-rhs): -87.54582214355469
+Cumulative time: 0.23529911041259766
+
+Iteration 8
+Adv attack time: 0.0140s
+Batch size: 1500
+Worst bound: tensor([-59.77561188], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0006  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 126
+1026 branch and bound domains visited
+Current (lb-rhs): -59.775611877441406
+Cumulative time: 0.26408863067626953
+
+Iteration 9
+Adv attack time: 0.0144s
+Batch size: 1500
+Worst bound: tensor([-25.75043488], device='cuda:0')
+Total time: 0.0147  pickout: 0.0002 decision: 0.0006  bounding: 0.0134 add_domain: 0.0005
+Length of domains: 125
+1278 branch and bound domains visited
+Current (lb-rhs): -25.75043487548828
+Cumulative time: 0.29344725608825684
+
+Iteration 10
+Adv attack time: 0.0140s
+Batch size: 1500
+Worst bound: tensor([-18.73324203], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0006  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 155
+1528 branch and bound domains visited
+Current (lb-rhs): -18.73324203491211
+Cumulative time: 0.32227206230163574
+
+Iteration 11
+Adv attack time: 0.0140s
+Batch size: 1500
+Worst bound: tensor([-11.76941872], device='cuda:0')
+Total time: 0.0148  pickout: 0.0002 decision: 0.0006  bounding: 0.0136 add_domain: 0.0005
+Length of domains: 174
+1838 branch and bound domains visited
+Current (lb-rhs): -11.769418716430664
+Cumulative time: 0.35137057304382324
+
+Iteration 12
+Adv attack time: 0.0139s
+Batch size: 1500
+Worst bound: tensor([-4.78527164], device='cuda:0')
+Total time: 0.0147  pickout: 0.0002 decision: 0.0006  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 213
+2186 branch and bound domains visited
+Current (lb-rhs): -4.785271644592285
+Cumulative time: 0.38016533851623535
+
+Iteration 13
+Adv attack time: 0.0144s
+Batch size: 1500
+Worst bound: tensor([-1.55374765], device='cuda:0')
+Total time: 0.0149  pickout: 0.0002 decision: 0.0006  bounding: 0.0136 add_domain: 0.0005
+Length of domains: 55
+2612 branch and bound domains visited
+Current (lb-rhs): -1.5537476539611816
+Cumulative time: 0.40964794158935547
+
+Iteration 14
+Adv attack time: 0.0140s
+Batch size: 1500
+Worst bound: tensor([-0.31510878], device='cuda:0')
+Total time: 0.0147  pickout: 0.0002 decision: 0.0006  bounding: 0.0134 add_domain: 0.0005
+Length of domains: 3
+2722 branch and bound domains visited
+Current (lb-rhs): -0.3151087760925293
+Cumulative time: 0.43855834007263184
+
+Iteration 15
+Adv attack time: 0.0140s
+Batch size: 1500
+Worst bound: tensor([2.76510096], device='cuda:0')
+Total time: 0.0148  pickout: 0.0002 decision: 0.0011  bounding: 0.0132 add_domain: 0.0002
+Length of domains: 0
+2734 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is -1.4043792486190796
+Cumulative time: 0.4673624038696289
+
+Result: safe in 1.0260 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 10, vnnlib ID: 10 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=24_m=1_instance_2_2.onnx
+Using vnnlib vnnlib/property_N=24_2.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=24_2.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=24_m=1_instance_2_2.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=24_m=1_instance_2_2.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-0.69989228]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-5.55180931]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[6.13688374]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.2244 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 599.5648925304413
+##### Instance 10 first 10 spec matrices: 
+tensor([[[1.]]], dtype=torch.float64)
+thresholds: tensor([-11.68869305], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/23): BoundParams(name=/23, inputs=[], perturbed=False)
+  (/24): BoundParams(name=/24, inputs=[], perturbed=False)
+  (/25): BoundParams(name=/25, inputs=[], perturbed=False)
+  (/26): BoundParams(name=/26, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/29): BoundParams(name=/29, inputs=[], perturbed=False)
+  (/30): BoundParams(name=/30, inputs=[], perturbed=False)
+  (/31): BoundParams(name=/31, inputs=[], perturbed=False)
+  (/32): BoundParams(name=/32, inputs=[], perturbed=False)
+  (/33): BoundParams(name=/33, inputs=[], perturbed=False)
+  (/34): BoundParams(name=/34, inputs=[], perturbed=False)
+  (/35): BoundParams(name=/35, inputs=[], perturbed=False)
+  (/36): BoundParams(name=/36, inputs=[], perturbed=False)
+  (/37): BoundParams(name=/37, inputs=[], perturbed=False)
+  (/38): BoundParams(name=/38, inputs=[], perturbed=False)
+  (/39): BoundParams(name=/39, inputs=[], perturbed=False)
+  (/40): BoundParams(name=/40, inputs=[], perturbed=False)
+  (/41): BoundParams(name=/41, inputs=[], perturbed=False)
+  (/42): BoundParams(name=/42, inputs=[], perturbed=False)
+  (/43): BoundParams(name=/43, inputs=[], perturbed=False)
+  (/44): BoundParams(name=/44, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /23, /24], perturbed=False)
+  (/46): BoundRelu(name=/46, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/46, /25, /26], perturbed=False)
+  (/48): BoundRelu(name=/48, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/48, /27, /28], perturbed=False)
+  (/50): BoundRelu(name=/50, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/50, /29, /30], perturbed=False)
+  (/52): BoundRelu(name=/52, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/52, /31, /32], perturbed=False)
+  (/54): BoundRelu(name=/54, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/54, /33, /34], perturbed=False)
+  (/56): BoundRelu(name=/56, inputs=[/input.19], perturbed=False)
+  (/input.23): BoundLinear(name=/input.23, inputs=[/56, /35, /36], perturbed=False)
+  (/58): BoundRelu(name=/58, inputs=[/input.23], perturbed=False)
+  (/input.27): BoundLinear(name=/input.27, inputs=[/58, /37, /38], perturbed=False)
+  (/60): BoundRelu(name=/60, inputs=[/input.27], perturbed=False)
+  (/input.31): BoundLinear(name=/input.31, inputs=[/60, /39, /40], perturbed=False)
+  (/62): BoundRelu(name=/62, inputs=[/input.31], perturbed=False)
+  (/input.35): BoundLinear(name=/input.35, inputs=[/62, /41, /42], perturbed=False)
+  (/64): BoundRelu(name=/64, inputs=[/input.35], perturbed=False)
+  (/65): BoundLinear(name=/65, inputs=[/64, /43, /44], perturbed=False)
+)
+Model prediction is: tensor([-0.69989228], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /23, /24], perturbed=True): [(BoundRelu(name=/46, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/46, /25, /26], perturbed=True): [(BoundRelu(name=/48, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/48, /27, /28], perturbed=True): [(BoundRelu(name=/50, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/50, /29, /30], perturbed=True): [(BoundRelu(name=/52, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/52, /31, /32], perturbed=True): [(BoundRelu(name=/54, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/54, /33, /34], perturbed=True): [(BoundRelu(name=/56, inputs=[/input.19], perturbed=True), 0)]
+  BoundLinear(name=/input.23, inputs=[/56, /35, /36], perturbed=True): [(BoundRelu(name=/58, inputs=[/input.23], perturbed=True), 0)]
+  BoundLinear(name=/input.27, inputs=[/58, /37, /38], perturbed=True): [(BoundRelu(name=/60, inputs=[/input.27], perturbed=True), 0)]
+  BoundLinear(name=/input.31, inputs=[/60, /39, /40], perturbed=True): [(BoundRelu(name=/62, inputs=[/input.31], perturbed=True), 0)]
+  BoundLinear(name=/input.35, inputs=[/62, /41, /42], perturbed=True): [(BoundRelu(name=/64, inputs=[/input.35], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/46, inputs=[/input], perturbed=True)
+   BoundRelu(name=/48, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/50, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/52, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/54, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/56, inputs=[/input.19], perturbed=True)
+   BoundRelu(name=/58, inputs=[/input.23], perturbed=True)
+   BoundRelu(name=/60, inputs=[/input.27], perturbed=True)
+   BoundRelu(name=/62, inputs=[/input.31], perturbed=True)
+   BoundRelu(name=/64, inputs=[/input.35], perturbed=True)
+initial forward+backward bounds: tensor([[-11.45119858]], device='cuda:0')
+Worst class: (+ rhs) -11.45119857788086
+Verified by initial bound!
+Result: safe in 0.6001 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 11, vnnlib ID: 11 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=24_m=1_instance_2_3.onnx
+Using vnnlib vnnlib/property_N=24_3.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=24_3.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=24_m=1_instance_2_3.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=24_m=1_instance_2_3.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-0.92715693]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-0.37301505]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[0.92649150]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.2252 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 599.5688707828522
+##### Instance 11 first 10 spec matrices: 
+tensor([[[-1.]]], dtype=torch.float64)
+thresholds: tensor([-0.55347645], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/23): BoundParams(name=/23, inputs=[], perturbed=False)
+  (/24): BoundParams(name=/24, inputs=[], perturbed=False)
+  (/25): BoundParams(name=/25, inputs=[], perturbed=False)
+  (/26): BoundParams(name=/26, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/29): BoundParams(name=/29, inputs=[], perturbed=False)
+  (/30): BoundParams(name=/30, inputs=[], perturbed=False)
+  (/31): BoundParams(name=/31, inputs=[], perturbed=False)
+  (/32): BoundParams(name=/32, inputs=[], perturbed=False)
+  (/33): BoundParams(name=/33, inputs=[], perturbed=False)
+  (/34): BoundParams(name=/34, inputs=[], perturbed=False)
+  (/35): BoundParams(name=/35, inputs=[], perturbed=False)
+  (/36): BoundParams(name=/36, inputs=[], perturbed=False)
+  (/37): BoundParams(name=/37, inputs=[], perturbed=False)
+  (/38): BoundParams(name=/38, inputs=[], perturbed=False)
+  (/39): BoundParams(name=/39, inputs=[], perturbed=False)
+  (/40): BoundParams(name=/40, inputs=[], perturbed=False)
+  (/41): BoundParams(name=/41, inputs=[], perturbed=False)
+  (/42): BoundParams(name=/42, inputs=[], perturbed=False)
+  (/43): BoundParams(name=/43, inputs=[], perturbed=False)
+  (/44): BoundParams(name=/44, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /23, /24], perturbed=False)
+  (/46): BoundRelu(name=/46, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/46, /25, /26], perturbed=False)
+  (/48): BoundRelu(name=/48, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/48, /27, /28], perturbed=False)
+  (/50): BoundRelu(name=/50, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/50, /29, /30], perturbed=False)
+  (/52): BoundRelu(name=/52, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/52, /31, /32], perturbed=False)
+  (/54): BoundRelu(name=/54, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/54, /33, /34], perturbed=False)
+  (/56): BoundRelu(name=/56, inputs=[/input.19], perturbed=False)
+  (/input.23): BoundLinear(name=/input.23, inputs=[/56, /35, /36], perturbed=False)
+  (/58): BoundRelu(name=/58, inputs=[/input.23], perturbed=False)
+  (/input.27): BoundLinear(name=/input.27, inputs=[/58, /37, /38], perturbed=False)
+  (/60): BoundRelu(name=/60, inputs=[/input.27], perturbed=False)
+  (/input.31): BoundLinear(name=/input.31, inputs=[/60, /39, /40], perturbed=False)
+  (/62): BoundRelu(name=/62, inputs=[/input.31], perturbed=False)
+  (/input.35): BoundLinear(name=/input.35, inputs=[/62, /41, /42], perturbed=False)
+  (/64): BoundRelu(name=/64, inputs=[/input.35], perturbed=False)
+  (/65): BoundLinear(name=/65, inputs=[/64, /43, /44], perturbed=False)
+)
+Model prediction is: tensor([-0.92715693], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /23, /24], perturbed=True): [(BoundRelu(name=/46, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/46, /25, /26], perturbed=True): [(BoundRelu(name=/48, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/48, /27, /28], perturbed=True): [(BoundRelu(name=/50, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/50, /29, /30], perturbed=True): [(BoundRelu(name=/52, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/52, /31, /32], perturbed=True): [(BoundRelu(name=/54, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/54, /33, /34], perturbed=True): [(BoundRelu(name=/56, inputs=[/input.19], perturbed=True), 0)]
+  BoundLinear(name=/input.23, inputs=[/56, /35, /36], perturbed=True): [(BoundRelu(name=/58, inputs=[/input.23], perturbed=True), 0)]
+  BoundLinear(name=/input.27, inputs=[/58, /37, /38], perturbed=True): [(BoundRelu(name=/60, inputs=[/input.27], perturbed=True), 0)]
+  BoundLinear(name=/input.31, inputs=[/60, /39, /40], perturbed=True): [(BoundRelu(name=/62, inputs=[/input.31], perturbed=True), 0)]
+  BoundLinear(name=/input.35, inputs=[/62, /41, /42], perturbed=True): [(BoundRelu(name=/64, inputs=[/input.35], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/46, inputs=[/input], perturbed=True)
+   BoundRelu(name=/48, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/50, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/52, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/54, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/56, inputs=[/input.19], perturbed=True)
+   BoundRelu(name=/58, inputs=[/input.23], perturbed=True)
+   BoundRelu(name=/60, inputs=[/input.27], perturbed=True)
+   BoundRelu(name=/62, inputs=[/input.31], perturbed=True)
+   BoundRelu(name=/64, inputs=[/input.35], perturbed=True)
+initial forward+backward bounds: tensor([[-10.87932968]], device='cuda:0')
+Worst class: (+ rhs) -10.879329681396484
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-10717.03027344], device='cuda:0')
+Total time: 0.0147  pickout: 0.0002 decision: 0.0012  bounding: 0.0129 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -10717.0302734375
+Cumulative time: 0.06034231185913086
+
+Iteration 2
+Adv attack time: 0.0146s
+Batch size: 1500
+Worst bound: tensor([-4452.37060547], device='cuda:0')
+Total time: 0.0149  pickout: 0.0002 decision: 0.0011  bounding: 0.0131 add_domain: 0.0005
+Length of domains: 16
+20 branch and bound domains visited
+Current (lb-rhs): -4452.37060546875
+Cumulative time: 0.0910177230834961
+
+Iteration 3
+Adv attack time: 0.0143s
+Batch size: 1500
+Worst bound: tensor([-1668.68530273], device='cuda:0')
+Total time: 0.0155  pickout: 0.0002 decision: 0.0011  bounding: 0.0137 add_domain: 0.0005
+Length of domains: 64
+84 branch and bound domains visited
+Current (lb-rhs): -1668.685302734375
+Cumulative time: 0.12128472328186035
+
+Iteration 4
+Adv attack time: 0.0143s
+Batch size: 1500
+Worst bound: tensor([-1209.94152832], device='cuda:0')
+Total time: 0.0152  pickout: 0.0002 decision: 0.0006  bounding: 0.0139 add_domain: 0.0005
+Length of domains: 126
+212 branch and bound domains visited
+Current (lb-rhs): -1209.9415283203125
+Cumulative time: 0.15098142623901367
+
+Iteration 5
+Adv attack time: 0.0148s
+Batch size: 1500
+Worst bound: tensor([-702.98950195], device='cuda:0')
+Total time: 0.0144  pickout: 0.0002 decision: 0.0007  bounding: 0.0131 add_domain: 0.0005
+Length of domains: 211
+464 branch and bound domains visited
+Current (lb-rhs): -702.989501953125
+Cumulative time: 0.18045902252197266
+
+Iteration 6
+Adv attack time: 0.0143s
+Batch size: 1500
+Worst bound: tensor([-462.99703979], device='cuda:0')
+Total time: 0.0164  pickout: 0.0002 decision: 0.0006  bounding: 0.0150 add_domain: 0.0005
+Length of domains: 342
+886 branch and bound domains visited
+Current (lb-rhs): -462.9970397949219
+Cumulative time: 0.2112748622894287
+
+Iteration 7
+Adv attack time: 0.0142s
+Batch size: 1500
+Worst bound: tensor([-239.11674500], device='cuda:0')
+Total time: 0.0151  pickout: 0.0002 decision: 0.0006  bounding: 0.0137 add_domain: 0.0005
+Length of domains: 392
+1570 branch and bound domains visited
+Current (lb-rhs): -239.1167449951172
+Cumulative time: 0.24072742462158203
+
+Iteration 8
+Adv attack time: 0.0142s
+Batch size: 1500
+Worst bound: tensor([-168.81980896], device='cuda:0')
+Total time: 0.0148  pickout: 0.0002 decision: 0.0007  bounding: 0.0135 add_domain: 0.0005
+Length of domains: 510
+2354 branch and bound domains visited
+Current (lb-rhs): -168.81980895996094
+Cumulative time: 0.269930362701416
+
+Iteration 9
+Adv attack time: 0.0141s
+Batch size: 1500
+Worst bound: tensor([-73.87535858], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0007  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 431
+3374 branch and bound domains visited
+Current (lb-rhs): -73.87535858154297
+Cumulative time: 0.2988851070404053
+
+Iteration 10
+Adv attack time: 0.0142s
+Batch size: 1500
+Worst bound: tensor([-63.34309006], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0007  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 496
+4236 branch and bound domains visited
+Current (lb-rhs): -63.34309005737305
+Cumulative time: 0.32794928550720215
+
+Iteration 11
+Adv attack time: 0.0139s
+Batch size: 1500
+Worst bound: tensor([-24.95657158], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0007  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 494
+5228 branch and bound domains visited
+Current (lb-rhs): -24.956571578979492
+Cumulative time: 0.3566889762878418
+
+Iteration 12
+Adv attack time: 0.0139s
+Batch size: 1500
+Worst bound: tensor([-22.38346481], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0006  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 629
+6216 branch and bound domains visited
+Current (lb-rhs): -22.383464813232422
+Cumulative time: 0.3853635787963867
+
+Iteration 13
+Adv attack time: 0.0139s
+Batch size: 1500
+Worst bound: tensor([-10.62899208], device='cuda:0')
+Total time: 0.0148  pickout: 0.0002 decision: 0.0007  bounding: 0.0134 add_domain: 0.0005
+Length of domains: 568
+7474 branch and bound domains visited
+Current (lb-rhs): -10.628992080688477
+Cumulative time: 0.4142012596130371
+
+Iteration 14
+Adv attack time: 0.0142s
+Batch size: 1500
+Worst bound: tensor([-8.20764828], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0006  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 694
+8610 branch and bound domains visited
+Current (lb-rhs): -8.207648277282715
+Cumulative time: 0.443265438079834
+
+Iteration 15
+Adv attack time: 0.0141s
+Batch size: 1500
+Worst bound: tensor([-4.89658213], device='cuda:0')
+Total time: 0.0147  pickout: 0.0002 decision: 0.0007  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 504
+9998 branch and bound domains visited
+Current (lb-rhs): -4.896582126617432
+Cumulative time: 0.4722299575805664
+
+Iteration 16
+Adv attack time: 0.0139s
+Batch size: 1500
+Worst bound: tensor([-3.33257723], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0007  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 416
+11006 branch and bound domains visited
+Current (lb-rhs): -3.3325772285461426
+Cumulative time: 0.5009446144104004
+
+Iteration 17
+Adv attack time: 0.0141s
+Batch size: 1500
+Worst bound: tensor([-1.14678991], device='cuda:0')
+Total time: 0.0148  pickout: 0.0002 decision: 0.0006  bounding: 0.0135 add_domain: 0.0005
+Length of domains: 12
+11838 branch and bound domains visited
+Current (lb-rhs): -1.1467899084091187
+Cumulative time: 0.5299994945526123
+
+Iteration 18
+Adv attack time: 0.0139s
+Batch size: 1500
+Worst bound: tensor([0.84564370], device='cuda:0')
+Total time: 0.0147  pickout: 0.0002 decision: 0.0011  bounding: 0.0132 add_domain: 0.0003
+Length of domains: 0
+11886 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is 0.2921672463417053
+Cumulative time: 0.558727502822876
+
+Result: safe in 1.1114 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 12, vnnlib ID: 12 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=32_m=1_instance_3_0.onnx
+Using vnnlib vnnlib/property_N=32_0.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=32_0.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=32_m=1_instance_3_0.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=32_m=1_instance_3_0.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 0.5300 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 13, vnnlib ID: 13 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=32_m=1_instance_3_1.onnx
+Using vnnlib vnnlib/property_N=32_1.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=32_1.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=32_m=1_instance_3_1.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=32_m=1_instance_3_1.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-1.02610159]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-0.88649797]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[1.12748325]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.2250 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 599.2153475284576
+##### Instance 13 first 10 spec matrices: 
+tensor([[[-1.]]], dtype=torch.float64)
+thresholds: tensor([-0.24098532], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/23): BoundParams(name=/23, inputs=[], perturbed=False)
+  (/24): BoundParams(name=/24, inputs=[], perturbed=False)
+  (/25): BoundParams(name=/25, inputs=[], perturbed=False)
+  (/26): BoundParams(name=/26, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/29): BoundParams(name=/29, inputs=[], perturbed=False)
+  (/30): BoundParams(name=/30, inputs=[], perturbed=False)
+  (/31): BoundParams(name=/31, inputs=[], perturbed=False)
+  (/32): BoundParams(name=/32, inputs=[], perturbed=False)
+  (/33): BoundParams(name=/33, inputs=[], perturbed=False)
+  (/34): BoundParams(name=/34, inputs=[], perturbed=False)
+  (/35): BoundParams(name=/35, inputs=[], perturbed=False)
+  (/36): BoundParams(name=/36, inputs=[], perturbed=False)
+  (/37): BoundParams(name=/37, inputs=[], perturbed=False)
+  (/38): BoundParams(name=/38, inputs=[], perturbed=False)
+  (/39): BoundParams(name=/39, inputs=[], perturbed=False)
+  (/40): BoundParams(name=/40, inputs=[], perturbed=False)
+  (/41): BoundParams(name=/41, inputs=[], perturbed=False)
+  (/42): BoundParams(name=/42, inputs=[], perturbed=False)
+  (/43): BoundParams(name=/43, inputs=[], perturbed=False)
+  (/44): BoundParams(name=/44, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /23, /24], perturbed=False)
+  (/46): BoundRelu(name=/46, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/46, /25, /26], perturbed=False)
+  (/48): BoundRelu(name=/48, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/48, /27, /28], perturbed=False)
+  (/50): BoundRelu(name=/50, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/50, /29, /30], perturbed=False)
+  (/52): BoundRelu(name=/52, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/52, /31, /32], perturbed=False)
+  (/54): BoundRelu(name=/54, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/54, /33, /34], perturbed=False)
+  (/56): BoundRelu(name=/56, inputs=[/input.19], perturbed=False)
+  (/input.23): BoundLinear(name=/input.23, inputs=[/56, /35, /36], perturbed=False)
+  (/58): BoundRelu(name=/58, inputs=[/input.23], perturbed=False)
+  (/input.27): BoundLinear(name=/input.27, inputs=[/58, /37, /38], perturbed=False)
+  (/60): BoundRelu(name=/60, inputs=[/input.27], perturbed=False)
+  (/input.31): BoundLinear(name=/input.31, inputs=[/60, /39, /40], perturbed=False)
+  (/62): BoundRelu(name=/62, inputs=[/input.31], perturbed=False)
+  (/input.35): BoundLinear(name=/input.35, inputs=[/62, /41, /42], perturbed=False)
+  (/64): BoundRelu(name=/64, inputs=[/input.35], perturbed=False)
+  (/65): BoundLinear(name=/65, inputs=[/64, /43, /44], perturbed=False)
+)
+Model prediction is: tensor([-1.02610159], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /23, /24], perturbed=True): [(BoundRelu(name=/46, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/46, /25, /26], perturbed=True): [(BoundRelu(name=/48, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/48, /27, /28], perturbed=True): [(BoundRelu(name=/50, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/50, /29, /30], perturbed=True): [(BoundRelu(name=/52, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/52, /31, /32], perturbed=True): [(BoundRelu(name=/54, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/54, /33, /34], perturbed=True): [(BoundRelu(name=/56, inputs=[/input.19], perturbed=True), 0)]
+  BoundLinear(name=/input.23, inputs=[/56, /35, /36], perturbed=True): [(BoundRelu(name=/58, inputs=[/input.23], perturbed=True), 0)]
+  BoundLinear(name=/input.27, inputs=[/58, /37, /38], perturbed=True): [(BoundRelu(name=/60, inputs=[/input.27], perturbed=True), 0)]
+  BoundLinear(name=/input.31, inputs=[/60, /39, /40], perturbed=True): [(BoundRelu(name=/62, inputs=[/input.31], perturbed=True), 0)]
+  BoundLinear(name=/input.35, inputs=[/62, /41, /42], perturbed=True): [(BoundRelu(name=/64, inputs=[/input.35], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/46, inputs=[/input], perturbed=True)
+   BoundRelu(name=/48, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/50, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/52, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/54, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/56, inputs=[/input.19], perturbed=True)
+   BoundRelu(name=/58, inputs=[/input.23], perturbed=True)
+   BoundRelu(name=/60, inputs=[/input.27], perturbed=True)
+   BoundRelu(name=/62, inputs=[/input.31], perturbed=True)
+   BoundRelu(name=/64, inputs=[/input.35], perturbed=True)
+initial forward+backward bounds: tensor([[-1.29876018]], device='cuda:0')
+Worst class: (+ rhs) -1.298760175704956
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-2128.21142578], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0011  bounding: 0.0128 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -2128.21142578125
+Cumulative time: 0.05778098106384277
+
+Iteration 2
+Adv attack time: 0.0147s
+Batch size: 1500
+Worst bound: tensor([-717.90643311], device='cuda:0')
+Total time: 0.0152  pickout: 0.0004 decision: 0.0011  bounding: 0.0132 add_domain: 0.0005
+Length of domains: 16
+20 branch and bound domains visited
+Current (lb-rhs): -717.9064331054688
+Cumulative time: 0.08803892135620117
+
+Iteration 3
+Adv attack time: 0.0146s
+Batch size: 1500
+Worst bound: tensor([-324.46994019], device='cuda:0')
+Total time: 0.0158  pickout: 0.0002 decision: 0.0011  bounding: 0.0140 add_domain: 0.0005
+Length of domains: 64
+84 branch and bound domains visited
+Current (lb-rhs): -324.4699401855469
+Cumulative time: 0.11888432502746582
+
+Iteration 4
+Adv attack time: 0.0145s
+Batch size: 1500
+Worst bound: tensor([-294.57055664], device='cuda:0')
+Total time: 0.0156  pickout: 0.0002 decision: 0.0006  bounding: 0.0143 add_domain: 0.0005
+Length of domains: 121
+212 branch and bound domains visited
+Current (lb-rhs): -294.570556640625
+Cumulative time: 0.14925622940063477
+
+Iteration 5
+Adv attack time: 0.0145s
+Batch size: 1500
+Worst bound: tensor([-117.30356598], device='cuda:0')
+Total time: 0.0152  pickout: 0.0002 decision: 0.0006  bounding: 0.0138 add_domain: 0.0005
+Length of domains: 158
+454 branch and bound domains visited
+Current (lb-rhs): -117.3035659790039
+Cumulative time: 0.17905592918395996
+
+Iteration 6
+Adv attack time: 0.0146s
+Batch size: 1500
+Worst bound: tensor([-102.62612915], device='cuda:0')
+Total time: 0.0149  pickout: 0.0002 decision: 0.0006  bounding: 0.0135 add_domain: 0.0005
+Length of domains: 176
+770 branch and bound domains visited
+Current (lb-rhs): -102.62612915039062
+Cumulative time: 0.2086944580078125
+
+Iteration 7
+Adv attack time: 0.0143s
+Batch size: 1500
+Worst bound: tensor([-45.06385803], device='cuda:0')
+Total time: 0.0148  pickout: 0.0002 decision: 0.0007  bounding: 0.0135 add_domain: 0.0005
+Length of domains: 125
+1122 branch and bound domains visited
+Current (lb-rhs): -45.06385803222656
+Cumulative time: 0.23805451393127441
+
+Iteration 8
+Adv attack time: 0.0143s
+Batch size: 1500
+Worst bound: tensor([-46.53016663], device='cuda:0')
+Total time: 0.0148  pickout: 0.0002 decision: 0.0006  bounding: 0.0134 add_domain: 0.0005
+Length of domains: 144
+1372 branch and bound domains visited
+Current (lb-rhs): -46.53016662597656
+Cumulative time: 0.26732563972473145
+
+Iteration 9
+Adv attack time: 0.0150s
+Batch size: 1500
+Worst bound: tensor([-19.39146042], device='cuda:0')
+Total time: 0.0147  pickout: 0.0002 decision: 0.0006  bounding: 0.0134 add_domain: 0.0005
+Length of domains: 82
+1660 branch and bound domains visited
+Current (lb-rhs): -19.391460418701172
+Cumulative time: 0.29714345932006836
+
+Iteration 10
+Adv attack time: 0.0141s
+Batch size: 1500
+Worst bound: tensor([-18.25043869], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0006  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 128
+1824 branch and bound domains visited
+Current (lb-rhs): -18.250438690185547
+Cumulative time: 0.3260691165924072
+
+Iteration 11
+Adv attack time: 0.0143s
+Batch size: 1500
+Worst bound: tensor([-8.20761585], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0006  bounding: 0.0132 add_domain: 0.0005
+Length of domains: 109
+2080 branch and bound domains visited
+Current (lb-rhs): -8.207615852355957
+Cumulative time: 0.35511112213134766
+
+Iteration 12
+Adv attack time: 0.0141s
+Batch size: 1500
+Worst bound: tensor([-8.04945278], device='cuda:0')
+Total time: 0.0147  pickout: 0.0002 decision: 0.0007  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 202
+2298 branch and bound domains visited
+Current (lb-rhs): -8.049452781677246
+Cumulative time: 0.3840618133544922
+
+Iteration 13
+Adv attack time: 0.0144s
+Batch size: 1500
+Worst bound: tensor([-2.45864463], device='cuda:0')
+Total time: 0.0147  pickout: 0.0002 decision: 0.0006  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 88
+2702 branch and bound domains visited
+Current (lb-rhs): -2.4586446285247803
+Cumulative time: 0.41329383850097656
+
+Iteration 14
+Adv attack time: 0.0143s
+Batch size: 1500
+Worst bound: tensor([-2.09471321], device='cuda:0')
+Total time: 0.0146  pickout: 0.0002 decision: 0.0006  bounding: 0.0133 add_domain: 0.0005
+Length of domains: 126
+2878 branch and bound domains visited
+Current (lb-rhs): -2.0947132110595703
+Cumulative time: 0.4424405097961426
+
+Iteration 15
+Adv attack time: 0.0144s
+Batch size: 1500
+Worst bound: tensor([0.10236380], device='cuda:0')
+Total time: 0.0143  pickout: 0.0002 decision: 0.0006  bounding: 0.0132 add_domain: 0.0002
+Length of domains: 0
+3130 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is -0.138621523976326
+Cumulative time: 0.47125887870788574
+
+Result: safe in 1.4166 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 14, vnnlib ID: 14 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=32_m=1_instance_3_2.onnx
+Using vnnlib vnnlib/property_N=32_2.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=32_2.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=32_m=1_instance_3_2.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=32_m=1_instance_3_2.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-1.65735579]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-6.62425232]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[2.58951092]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.2263 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 599.2196626663208
+##### Instance 14 first 10 spec matrices: 
+tensor([[[1.]]], dtype=torch.float64)
+thresholds: tensor([-9.21376324], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/23): BoundParams(name=/23, inputs=[], perturbed=False)
+  (/24): BoundParams(name=/24, inputs=[], perturbed=False)
+  (/25): BoundParams(name=/25, inputs=[], perturbed=False)
+  (/26): BoundParams(name=/26, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/29): BoundParams(name=/29, inputs=[], perturbed=False)
+  (/30): BoundParams(name=/30, inputs=[], perturbed=False)
+  (/31): BoundParams(name=/31, inputs=[], perturbed=False)
+  (/32): BoundParams(name=/32, inputs=[], perturbed=False)
+  (/33): BoundParams(name=/33, inputs=[], perturbed=False)
+  (/34): BoundParams(name=/34, inputs=[], perturbed=False)
+  (/35): BoundParams(name=/35, inputs=[], perturbed=False)
+  (/36): BoundParams(name=/36, inputs=[], perturbed=False)
+  (/37): BoundParams(name=/37, inputs=[], perturbed=False)
+  (/38): BoundParams(name=/38, inputs=[], perturbed=False)
+  (/39): BoundParams(name=/39, inputs=[], perturbed=False)
+  (/40): BoundParams(name=/40, inputs=[], perturbed=False)
+  (/41): BoundParams(name=/41, inputs=[], perturbed=False)
+  (/42): BoundParams(name=/42, inputs=[], perturbed=False)
+  (/43): BoundParams(name=/43, inputs=[], perturbed=False)
+  (/44): BoundParams(name=/44, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /23, /24], perturbed=False)
+  (/46): BoundRelu(name=/46, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/46, /25, /26], perturbed=False)
+  (/48): BoundRelu(name=/48, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/48, /27, /28], perturbed=False)
+  (/50): BoundRelu(name=/50, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/50, /29, /30], perturbed=False)
+  (/52): BoundRelu(name=/52, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/52, /31, /32], perturbed=False)
+  (/54): BoundRelu(name=/54, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/54, /33, /34], perturbed=False)
+  (/56): BoundRelu(name=/56, inputs=[/input.19], perturbed=False)
+  (/input.23): BoundLinear(name=/input.23, inputs=[/56, /35, /36], perturbed=False)
+  (/58): BoundRelu(name=/58, inputs=[/input.23], perturbed=False)
+  (/input.27): BoundLinear(name=/input.27, inputs=[/58, /37, /38], perturbed=False)
+  (/60): BoundRelu(name=/60, inputs=[/input.27], perturbed=False)
+  (/input.31): BoundLinear(name=/input.31, inputs=[/60, /39, /40], perturbed=False)
+  (/62): BoundRelu(name=/62, inputs=[/input.31], perturbed=False)
+  (/input.35): BoundLinear(name=/input.35, inputs=[/62, /41, /42], perturbed=False)
+  (/64): BoundRelu(name=/64, inputs=[/input.35], perturbed=False)
+  (/65): BoundLinear(name=/65, inputs=[/64, /43, /44], perturbed=False)
+)
+Model prediction is: tensor([-1.65735579], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /23, /24], perturbed=True): [(BoundRelu(name=/46, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/46, /25, /26], perturbed=True): [(BoundRelu(name=/48, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/48, /27, /28], perturbed=True): [(BoundRelu(name=/50, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/50, /29, /30], perturbed=True): [(BoundRelu(name=/52, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/52, /31, /32], perturbed=True): [(BoundRelu(name=/54, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/54, /33, /34], perturbed=True): [(BoundRelu(name=/56, inputs=[/input.19], perturbed=True), 0)]
+  BoundLinear(name=/input.23, inputs=[/56, /35, /36], perturbed=True): [(BoundRelu(name=/58, inputs=[/input.23], perturbed=True), 0)]
+  BoundLinear(name=/input.27, inputs=[/58, /37, /38], perturbed=True): [(BoundRelu(name=/60, inputs=[/input.27], perturbed=True), 0)]
+  BoundLinear(name=/input.31, inputs=[/60, /39, /40], perturbed=True): [(BoundRelu(name=/62, inputs=[/input.31], perturbed=True), 0)]
+  BoundLinear(name=/input.35, inputs=[/62, /41, /42], perturbed=True): [(BoundRelu(name=/64, inputs=[/input.35], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/46, inputs=[/input], perturbed=True)
+   BoundRelu(name=/48, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/50, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/52, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/54, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/56, inputs=[/input.19], perturbed=True)
+   BoundRelu(name=/58, inputs=[/input.23], perturbed=True)
+   BoundRelu(name=/60, inputs=[/input.27], perturbed=True)
+   BoundRelu(name=/62, inputs=[/input.31], perturbed=True)
+   BoundRelu(name=/64, inputs=[/input.35], perturbed=True)
+initial forward+backward bounds: tensor([[-17.15713310]], device='cuda:0')
+Worst class: (+ rhs) -17.157133102416992
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-4674.60937500], device='cuda:0')
+Total time: 0.0144  pickout: 0.0002 decision: 0.0011  bounding: 0.0126 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -4674.609375
+Cumulative time: 0.058211565017700195
+
+Iteration 2
+Adv attack time: 0.0147s
+Batch size: 1500
+Worst bound: tensor([-1654.14245605], device='cuda:0')
+Total time: 0.0148  pickout: 0.0002 decision: 0.0011  bounding: 0.0130 add_domain: 0.0005
+Length of domains: 16
+20 branch and bound domains visited
+Current (lb-rhs): -1654.1424560546875
+Cumulative time: 0.0881657600402832
+
+Iteration 3
+Adv attack time: 0.0146s
+Batch size: 1500
+Worst bound: tensor([-437.34555054], device='cuda:0')
+Total time: 0.0149  pickout: 0.0002 decision: 0.0011  bounding: 0.0131 add_domain: 0.0005
+Length of domains: 60
+84 branch and bound domains visited
+Current (lb-rhs): -437.3455505371094
+Cumulative time: 0.11804986000061035
+
+Iteration 4
+Adv attack time: 0.0146s
+Batch size: 1500
+Worst bound: tensor([-246.83476257], device='cuda:0')
+Total time: 0.0148  pickout: 0.0002 decision: 0.0006  bounding: 0.0135 add_domain: 0.0005
+Length of domains: 99
+204 branch and bound domains visited
+Current (lb-rhs): -246.8347625732422
+Cumulative time: 0.14768719673156738
+
+Iteration 5
+Adv attack time: 0.0146s
+Batch size: 1500
+Worst bound: tensor([-108.27144623], device='cuda:0')
+Total time: 0.0150  pickout: 0.0002 decision: 0.0006  bounding: 0.0137 add_domain: 0.0005
+Length of domains: 106
+402 branch and bound domains visited
+Current (lb-rhs): -108.27144622802734
+Cumulative time: 0.1774916648864746
+
+Iteration 6
+Adv attack time: 0.0145s
+Batch size: 1500
+Worst bound: tensor([-64.75885773], device='cuda:0')
+Total time: 0.0148  pickout: 0.0002 decision: 0.0006  bounding: 0.0135 add_domain: 0.0005
+Length of domains: 128
+614 branch and bound domains visited
+Current (lb-rhs): -64.75885772705078
+Cumulative time: 0.20704340934753418
+
+Iteration 7
+Adv attack time: 0.0145s
+Batch size: 1500
+Worst bound: tensor([-24.40827560], device='cuda:0')
+Total time: 0.0144  pickout: 0.0002 decision: 0.0007  bounding: 0.0131 add_domain: 0.0005
+Length of domains: 69
+870 branch and bound domains visited
+Current (lb-rhs): -24.408275604248047
+Cumulative time: 0.2361431121826172
+
+Iteration 8
+Adv attack time: 0.0144s
+Batch size: 1500
+Worst bound: tensor([-18.22466660], device='cuda:0')
+Total time: 0.0149  pickout: 0.0002 decision: 0.0006  bounding: 0.0135 add_domain: 0.0005
+Length of domains: 54
+1008 branch and bound domains visited
+Current (lb-rhs): -18.224666595458984
+Cumulative time: 0.26563525199890137
+
+Iteration 9
+Adv attack time: 0.0146s
+Batch size: 1500
+Worst bound: tensor([-5.41569805], device='cuda:0')
+Total time: 0.0147  pickout: 0.0002 decision: 0.0006  bounding: 0.0134 add_domain: 0.0005
+Length of domains: 6
+1116 branch and bound domains visited
+Current (lb-rhs): -5.415698051452637
+Cumulative time: 0.2950887680053711
+
+Iteration 10
+Adv attack time: 0.0142s
+Batch size: 1500
+Worst bound: tensor([5.32908106], device='cuda:0')
+Total time: 0.0147  pickout: 0.0002 decision: 0.0011  bounding: 0.0132 add_domain: 0.0002
+Length of domains: 0
+1140 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is -3.8846821784973145
+Cumulative time: 0.32402682304382324
+
+Result: safe in 1.2272 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 15, vnnlib ID: 15 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=32_m=1_instance_3_3.onnx
+Using vnnlib vnnlib/property_N=32_3.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=32_3.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=32_m=1_instance_3_3.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=32_m=1_instance_3_3.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 0.5168 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 16, vnnlib ID: 16 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=40_m=1_instance_4_0.onnx
+Using vnnlib vnnlib/property_N=40_0.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=40_0.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=40_m=1_instance_4_0.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=40_m=1_instance_4_0.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 1.2973 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 17, vnnlib ID: 17 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=40_m=1_instance_4_1.onnx
+Using vnnlib vnnlib/property_N=40_1.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=40_1.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=40_m=1_instance_4_1.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=40_m=1_instance_4_1.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-1.24431539]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-5.28464890]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[3.93955898]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.2521 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 598.3913278579712
+##### Instance 17 first 10 spec matrices: 
+tensor([[[1.]]], dtype=torch.float64)
+thresholds: tensor([-9.22420788], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/29): BoundParams(name=/29, inputs=[], perturbed=False)
+  (/30): BoundParams(name=/30, inputs=[], perturbed=False)
+  (/31): BoundParams(name=/31, inputs=[], perturbed=False)
+  (/32): BoundParams(name=/32, inputs=[], perturbed=False)
+  (/33): BoundParams(name=/33, inputs=[], perturbed=False)
+  (/34): BoundParams(name=/34, inputs=[], perturbed=False)
+  (/35): BoundParams(name=/35, inputs=[], perturbed=False)
+  (/36): BoundParams(name=/36, inputs=[], perturbed=False)
+  (/37): BoundParams(name=/37, inputs=[], perturbed=False)
+  (/38): BoundParams(name=/38, inputs=[], perturbed=False)
+  (/39): BoundParams(name=/39, inputs=[], perturbed=False)
+  (/40): BoundParams(name=/40, inputs=[], perturbed=False)
+  (/41): BoundParams(name=/41, inputs=[], perturbed=False)
+  (/42): BoundParams(name=/42, inputs=[], perturbed=False)
+  (/43): BoundParams(name=/43, inputs=[], perturbed=False)
+  (/44): BoundParams(name=/44, inputs=[], perturbed=False)
+  (/45): BoundParams(name=/45, inputs=[], perturbed=False)
+  (/46): BoundParams(name=/46, inputs=[], perturbed=False)
+  (/47): BoundParams(name=/47, inputs=[], perturbed=False)
+  (/48): BoundParams(name=/48, inputs=[], perturbed=False)
+  (/49): BoundParams(name=/49, inputs=[], perturbed=False)
+  (/50): BoundParams(name=/50, inputs=[], perturbed=False)
+  (/51): BoundParams(name=/51, inputs=[], perturbed=False)
+  (/52): BoundParams(name=/52, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=False)
+  (/54): BoundRelu(name=/54, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=False)
+  (/56): BoundRelu(name=/56, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=False)
+  (/58): BoundRelu(name=/58, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=False)
+  (/60): BoundRelu(name=/60, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=False)
+  (/62): BoundRelu(name=/62, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=False)
+  (/64): BoundRelu(name=/64, inputs=[/input.19], perturbed=False)
+  (/input.23): BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=False)
+  (/66): BoundRelu(name=/66, inputs=[/input.23], perturbed=False)
+  (/input.27): BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=False)
+  (/68): BoundRelu(name=/68, inputs=[/input.27], perturbed=False)
+  (/input.31): BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=False)
+  (/70): BoundRelu(name=/70, inputs=[/input.31], perturbed=False)
+  (/input.35): BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=False)
+  (/72): BoundRelu(name=/72, inputs=[/input.35], perturbed=False)
+  (/input.39): BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=False)
+  (/74): BoundRelu(name=/74, inputs=[/input.39], perturbed=False)
+  (/input.43): BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=False)
+  (/76): BoundRelu(name=/76, inputs=[/input.43], perturbed=False)
+  (/77): BoundLinear(name=/77, inputs=[/76, /51, /52], perturbed=False)
+)
+Model prediction is: tensor([-1.24431539], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=True): [(BoundRelu(name=/54, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=True): [(BoundRelu(name=/56, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=True): [(BoundRelu(name=/58, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=True): [(BoundRelu(name=/60, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=True): [(BoundRelu(name=/62, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=True): [(BoundRelu(name=/64, inputs=[/input.19], perturbed=True), 0)]
+  BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=True): [(BoundRelu(name=/66, inputs=[/input.23], perturbed=True), 0)]
+  BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=True): [(BoundRelu(name=/68, inputs=[/input.27], perturbed=True), 0)]
+  BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=True): [(BoundRelu(name=/70, inputs=[/input.31], perturbed=True), 0)]
+  BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=True): [(BoundRelu(name=/72, inputs=[/input.35], perturbed=True), 0)]
+  BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=True): [(BoundRelu(name=/74, inputs=[/input.39], perturbed=True), 0)]
+  BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=True): [(BoundRelu(name=/76, inputs=[/input.43], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/54, inputs=[/input], perturbed=True)
+   BoundRelu(name=/56, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/58, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/60, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/62, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/64, inputs=[/input.19], perturbed=True)
+   BoundRelu(name=/66, inputs=[/input.23], perturbed=True)
+   BoundRelu(name=/68, inputs=[/input.27], perturbed=True)
+   BoundRelu(name=/70, inputs=[/input.31], perturbed=True)
+   BoundRelu(name=/72, inputs=[/input.35], perturbed=True)
+   BoundRelu(name=/74, inputs=[/input.39], perturbed=True)
+   BoundRelu(name=/76, inputs=[/input.43], perturbed=True)
+initial forward+backward bounds: tensor([[-12.55253220]], device='cuda:0')
+Worst class: (+ rhs) -12.552532196044922
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-36217.01562500], device='cuda:0')
+Total time: 0.0176  pickout: 0.0002 decision: 0.0012  bounding: 0.0157 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -36217.015625
+Cumulative time: 0.08156275749206543
+
+Iteration 2
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-16972.80859375], device='cuda:0')
+Total time: 0.0175  pickout: 0.0002 decision: 0.0011  bounding: 0.0157 add_domain: 0.0005
+Length of domains: 16
+20 branch and bound domains visited
+Current (lb-rhs): -16972.80859375
+Cumulative time: 0.11651396751403809
+
+Iteration 3
+Adv attack time: 0.0174s
+Batch size: 1500
+Worst bound: tensor([-5645.75097656], device='cuda:0')
+Total time: 0.0187  pickout: 0.0002 decision: 0.0011  bounding: 0.0169 add_domain: 0.0005
+Length of domains: 64
+84 branch and bound domains visited
+Current (lb-rhs): -5645.7509765625
+Cumulative time: 0.1529827117919922
+
+Iteration 4
+Adv attack time: 0.0172s
+Batch size: 1500
+Worst bound: tensor([-4310.55664062], device='cuda:0')
+Total time: 0.0177  pickout: 0.0002 decision: 0.0006  bounding: 0.0164 add_domain: 0.0005
+Length of domains: 128
+212 branch and bound domains visited
+Current (lb-rhs): -4310.556640625
+Cumulative time: 0.18808507919311523
+
+Iteration 5
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-1968.10546875], device='cuda:0')
+Total time: 0.0173  pickout: 0.0002 decision: 0.0006  bounding: 0.0160 add_domain: 0.0005
+Length of domains: 237
+468 branch and bound domains visited
+Current (lb-rhs): -1968.10546875
+Cumulative time: 0.22254133224487305
+
+Iteration 6
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([-1496.90856934], device='cuda:0')
+Total time: 0.0171  pickout: 0.0002 decision: 0.0006  bounding: 0.0158 add_domain: 0.0005
+Length of domains: 356
+942 branch and bound domains visited
+Current (lb-rhs): -1496.9085693359375
+Cumulative time: 0.25696325302124023
+
+Iteration 7
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-680.87194824], device='cuda:0')
+Total time: 0.0191  pickout: 0.0002 decision: 0.0006  bounding: 0.0178 add_domain: 0.0005
+Length of domains: 386
+1654 branch and bound domains visited
+Current (lb-rhs): -680.8719482421875
+Cumulative time: 0.293316125869751
+
+Iteration 8
+Adv attack time: 0.0172s
+Batch size: 1500
+Worst bound: tensor([-562.04016113], device='cuda:0')
+Total time: 0.0203  pickout: 0.0002 decision: 0.0007  bounding: 0.0189 add_domain: 0.0005
+Length of domains: 485
+2426 branch and bound domains visited
+Current (lb-rhs): -562.0401611328125
+Cumulative time: 0.3310394287109375
+
+Iteration 9
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([-218.96075439], device='cuda:0')
+Total time: 0.0228  pickout: 0.0002 decision: 0.0007  bounding: 0.0215 add_domain: 0.0005
+Length of domains: 518
+3396 branch and bound domains visited
+Current (lb-rhs): -218.96075439453125
+Cumulative time: 0.3711884021759033
+
+Iteration 10
+Adv attack time: 0.0173s
+Batch size: 1500
+Worst bound: tensor([-190.59237671], device='cuda:0')
+Total time: 0.0237  pickout: 0.0002 decision: 0.0007  bounding: 0.0224 add_domain: 0.0005
+Length of domains: 584
+4432 branch and bound domains visited
+Current (lb-rhs): -190.59237670898438
+Cumulative time: 0.41242194175720215
+
+Iteration 11
+Adv attack time: 0.0172s
+Batch size: 1500
+Worst bound: tensor([-85.01319122], device='cuda:0')
+Total time: 0.0259  pickout: 0.0002 decision: 0.0007  bounding: 0.0246 add_domain: 0.0005
+Length of domains: 554
+5600 branch and bound domains visited
+Current (lb-rhs): -85.01319122314453
+Cumulative time: 0.4557194709777832
+
+Iteration 12
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([-55.29726791], device='cuda:0')
+Total time: 0.0246  pickout: 0.0002 decision: 0.0007  bounding: 0.0233 add_domain: 0.0005
+Length of domains: 554
+6708 branch and bound domains visited
+Current (lb-rhs): -55.29726791381836
+Cumulative time: 0.4976341724395752
+
+Iteration 13
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-29.74367523], device='cuda:0')
+Total time: 0.0238  pickout: 0.0002 decision: 0.0007  bounding: 0.0225 add_domain: 0.0005
+Length of domains: 397
+7816 branch and bound domains visited
+Current (lb-rhs): -29.743675231933594
+Cumulative time: 0.5386781692504883
+
+Iteration 14
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-13.95526981], device='cuda:0')
+Total time: 0.0199  pickout: 0.0002 decision: 0.0007  bounding: 0.0186 add_domain: 0.0005
+Length of domains: 364
+8610 branch and bound domains visited
+Current (lb-rhs): -13.955269813537598
+Cumulative time: 0.5757865905761719
+
+Iteration 15
+Adv attack time: 0.0169s
+Batch size: 1500
+Worst bound: tensor([-4.43033123], device='cuda:0')
+Total time: 0.0187  pickout: 0.0002 decision: 0.0007  bounding: 0.0174 add_domain: 0.0005
+Length of domains: 28
+9338 branch and bound domains visited
+Current (lb-rhs): -4.430331230163574
+Cumulative time: 0.6116795539855957
+
+Iteration 16
+Adv attack time: 0.0169s
+Batch size: 1500
+Worst bound: tensor([3.37826061], device='cuda:0')
+Total time: 0.0173  pickout: 0.0002 decision: 0.0011  bounding: 0.0157 add_domain: 0.0002
+Length of domains: 0
+9450 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is -5.845947265625
+Cumulative time: 0.6459004878997803
+
+Result: safe in 2.4238 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 18, vnnlib ID: 18 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=40_m=1_instance_4_2.onnx
+Using vnnlib vnnlib/property_N=40_2.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=40_2.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=40_m=1_instance_4_2.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=40_m=1_instance_4_2.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-1.24313617]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-0.82326603]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[1.09126842]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.2466 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 598.411162853241
+##### Instance 18 first 10 spec matrices: 
+tensor([[[-1.]]], dtype=torch.float64)
+thresholds: tensor([-0.26800239], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/29): BoundParams(name=/29, inputs=[], perturbed=False)
+  (/30): BoundParams(name=/30, inputs=[], perturbed=False)
+  (/31): BoundParams(name=/31, inputs=[], perturbed=False)
+  (/32): BoundParams(name=/32, inputs=[], perturbed=False)
+  (/33): BoundParams(name=/33, inputs=[], perturbed=False)
+  (/34): BoundParams(name=/34, inputs=[], perturbed=False)
+  (/35): BoundParams(name=/35, inputs=[], perturbed=False)
+  (/36): BoundParams(name=/36, inputs=[], perturbed=False)
+  (/37): BoundParams(name=/37, inputs=[], perturbed=False)
+  (/38): BoundParams(name=/38, inputs=[], perturbed=False)
+  (/39): BoundParams(name=/39, inputs=[], perturbed=False)
+  (/40): BoundParams(name=/40, inputs=[], perturbed=False)
+  (/41): BoundParams(name=/41, inputs=[], perturbed=False)
+  (/42): BoundParams(name=/42, inputs=[], perturbed=False)
+  (/43): BoundParams(name=/43, inputs=[], perturbed=False)
+  (/44): BoundParams(name=/44, inputs=[], perturbed=False)
+  (/45): BoundParams(name=/45, inputs=[], perturbed=False)
+  (/46): BoundParams(name=/46, inputs=[], perturbed=False)
+  (/47): BoundParams(name=/47, inputs=[], perturbed=False)
+  (/48): BoundParams(name=/48, inputs=[], perturbed=False)
+  (/49): BoundParams(name=/49, inputs=[], perturbed=False)
+  (/50): BoundParams(name=/50, inputs=[], perturbed=False)
+  (/51): BoundParams(name=/51, inputs=[], perturbed=False)
+  (/52): BoundParams(name=/52, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=False)
+  (/54): BoundRelu(name=/54, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=False)
+  (/56): BoundRelu(name=/56, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=False)
+  (/58): BoundRelu(name=/58, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=False)
+  (/60): BoundRelu(name=/60, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=False)
+  (/62): BoundRelu(name=/62, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=False)
+  (/64): BoundRelu(name=/64, inputs=[/input.19], perturbed=False)
+  (/input.23): BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=False)
+  (/66): BoundRelu(name=/66, inputs=[/input.23], perturbed=False)
+  (/input.27): BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=False)
+  (/68): BoundRelu(name=/68, inputs=[/input.27], perturbed=False)
+  (/input.31): BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=False)
+  (/70): BoundRelu(name=/70, inputs=[/input.31], perturbed=False)
+  (/input.35): BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=False)
+  (/72): BoundRelu(name=/72, inputs=[/input.35], perturbed=False)
+  (/input.39): BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=False)
+  (/74): BoundRelu(name=/74, inputs=[/input.39], perturbed=False)
+  (/input.43): BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=False)
+  (/76): BoundRelu(name=/76, inputs=[/input.43], perturbed=False)
+  (/77): BoundLinear(name=/77, inputs=[/76, /51, /52], perturbed=False)
+)
+Model prediction is: tensor([-1.24313641], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=True): [(BoundRelu(name=/54, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=True): [(BoundRelu(name=/56, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=True): [(BoundRelu(name=/58, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=True): [(BoundRelu(name=/60, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=True): [(BoundRelu(name=/62, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=True): [(BoundRelu(name=/64, inputs=[/input.19], perturbed=True), 0)]
+  BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=True): [(BoundRelu(name=/66, inputs=[/input.23], perturbed=True), 0)]
+  BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=True): [(BoundRelu(name=/68, inputs=[/input.27], perturbed=True), 0)]
+  BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=True): [(BoundRelu(name=/70, inputs=[/input.31], perturbed=True), 0)]
+  BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=True): [(BoundRelu(name=/72, inputs=[/input.35], perturbed=True), 0)]
+  BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=True): [(BoundRelu(name=/74, inputs=[/input.39], perturbed=True), 0)]
+  BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=True): [(BoundRelu(name=/76, inputs=[/input.43], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/54, inputs=[/input], perturbed=True)
+   BoundRelu(name=/56, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/58, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/60, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/62, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/64, inputs=[/input.19], perturbed=True)
+   BoundRelu(name=/66, inputs=[/input.23], perturbed=True)
+   BoundRelu(name=/68, inputs=[/input.27], perturbed=True)
+   BoundRelu(name=/70, inputs=[/input.31], perturbed=True)
+   BoundRelu(name=/72, inputs=[/input.35], perturbed=True)
+   BoundRelu(name=/74, inputs=[/input.39], perturbed=True)
+   BoundRelu(name=/76, inputs=[/input.43], perturbed=True)
+initial forward+backward bounds: tensor([[-4.90019751]], device='cuda:0')
+Worst class: (+ rhs) -4.900197505950928
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-41253.75390625], device='cuda:0')
+Total time: 0.0170  pickout: 0.0002 decision: 0.0012  bounding: 0.0151 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -41253.75390625
+Cumulative time: 0.07914185523986816
+
+Iteration 2
+Adv attack time: 0.0165s
+Batch size: 1500
+Worst bound: tensor([-17427.98046875], device='cuda:0')
+Total time: 0.0170  pickout: 0.0002 decision: 0.0011  bounding: 0.0152 add_domain: 0.0005
+Length of domains: 16
+20 branch and bound domains visited
+Current (lb-rhs): -17427.98046875
+Cumulative time: 0.11303091049194336
+
+Iteration 3
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-7263.88525391], device='cuda:0')
+Total time: 0.0170  pickout: 0.0002 decision: 0.0011  bounding: 0.0152 add_domain: 0.0005
+Length of domains: 64
+84 branch and bound domains visited
+Current (lb-rhs): -7263.88525390625
+Cumulative time: 0.1475517749786377
+
+Iteration 4
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([-6591.29199219], device='cuda:0')
+Total time: 0.0173  pickout: 0.0002 decision: 0.0006  bounding: 0.0160 add_domain: 0.0005
+Length of domains: 128
+212 branch and bound domains visited
+Current (lb-rhs): -6591.2919921875
+Cumulative time: 0.18219494819641113
+
+Iteration 5
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-2449.13159180], device='cuda:0')
+Total time: 0.0171  pickout: 0.0002 decision: 0.0006  bounding: 0.0157 add_domain: 0.0005
+Length of domains: 256
+468 branch and bound domains visited
+Current (lb-rhs): -2449.131591796875
+Cumulative time: 0.2164139747619629
+
+Iteration 6
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-1890.10070801], device='cuda:0')
+Total time: 0.0171  pickout: 0.0002 decision: 0.0006  bounding: 0.0158 add_domain: 0.0005
+Length of domains: 492
+980 branch and bound domains visited
+Current (lb-rhs): -1890.1007080078125
+Cumulative time: 0.25079870223999023
+
+Iteration 7
+Adv attack time: 0.0172s
+Batch size: 1500
+Worst bound: tensor([-904.41711426], device='cuda:0')
+Total time: 0.0231  pickout: 0.0002 decision: 0.0007  bounding: 0.0217 add_domain: 0.0005
+Length of domains: 787
+1964 branch and bound domains visited
+Current (lb-rhs): -904.4171142578125
+Cumulative time: 0.2968888282775879
+
+Iteration 8
+Adv attack time: 0.0353s
+Batch size: 1500
+Worst bound: tensor([-856.47137451], device='cuda:0')
+Total time: 0.0321  pickout: 0.0002 decision: 0.0007  bounding: 0.0304 add_domain: 0.0008
+Length of domains: 1173
+3538 branch and bound domains visited
+Current (lb-rhs): -856.4713745117188
+Cumulative time: 0.36998414993286133
+
+Iteration 9
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-253.80082703], device='cuda:0')
+Total time: 0.0421  pickout: 0.0002 decision: 0.0007  bounding: 0.0407 add_domain: 0.0005
+Length of domains: 1055
+5884 branch and bound domains visited
+Current (lb-rhs): -253.8008270263672
+Cumulative time: 0.429323673248291
+
+Iteration 10
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([-249.28219604], device='cuda:0')
+Total time: 0.0376  pickout: 0.0002 decision: 0.0007  bounding: 0.0362 add_domain: 0.0005
+Length of domains: 1330
+7994 branch and bound domains visited
+Current (lb-rhs): -249.28219604492188
+Cumulative time: 0.48426008224487305
+
+Iteration 11
+Adv attack time: 0.0172s
+Batch size: 1500
+Worst bound: tensor([-93.84166718], device='cuda:0')
+Total time: 0.0438  pickout: 0.0002 decision: 0.0007  bounding: 0.0424 add_domain: 0.0005
+Length of domains: 1058
+10654 branch and bound domains visited
+Current (lb-rhs): -93.84166717529297
+Cumulative time: 0.545485258102417
+
+Iteration 12
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-89.15542603], device='cuda:0')
+Total time: 0.0371  pickout: 0.0002 decision: 0.0007  bounding: 0.0357 add_domain: 0.0005
+Length of domains: 1591
+12770 branch and bound domains visited
+Current (lb-rhs): -89.15542602539062
+Cumulative time: 0.5997953414916992
+
+Iteration 13
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([-39.08763504], device='cuda:0')
+Total time: 0.0476  pickout: 0.0002 decision: 0.0007  bounding: 0.0462 add_domain: 0.0005
+Length of domains: 1553
+15770 branch and bound domains visited
+Current (lb-rhs): -73.54973602294922
+Cumulative time: 0.6649422645568848
+
+Iteration 14
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-36.28194809], device='cuda:0')
+Total time: 0.0479  pickout: 0.0002 decision: 0.0007  bounding: 0.0463 add_domain: 0.0008
+Length of domains: 2294
+18770 branch and bound domains visited
+Current (lb-rhs): -73.54973602294922
+Cumulative time: 0.7303001880645752
+
+Iteration 15
+Adv attack time: 0.0172s
+Batch size: 1500
+Worst bound: tensor([-25.02598763], device='cuda:0')
+Total time: 0.0483  pickout: 0.0002 decision: 0.0007  bounding: 0.0469 add_domain: 0.0005
+Length of domains: 1870
+21770 branch and bound domains visited
+Current (lb-rhs): -73.54973602294922
+Cumulative time: 0.7962026596069336
+
+Iteration 16
+Adv attack time: 0.0172s
+Batch size: 1500
+Worst bound: tensor([-16.52775192], device='cuda:0')
+Total time: 0.0478  pickout: 0.0002 decision: 0.0007  bounding: 0.0463 add_domain: 0.0006
+Length of domains: 2154
+24770 branch and bound domains visited
+Current (lb-rhs): -73.54973602294922
+Cumulative time: 0.8616368770599365
+
+Iteration 17
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([-12.88188553], device='cuda:0')
+Total time: 0.0475  pickout: 0.0002 decision: 0.0007  bounding: 0.0461 add_domain: 0.0005
+Length of domains: 1646
+27770 branch and bound domains visited
+Current (lb-rhs): -73.54973602294922
+Cumulative time: 0.9267311096191406
+
+Iteration 18
+Adv attack time: 0.0172s
+Batch size: 1500
+Worst bound: tensor([-15.97032833], device='cuda:0')
+Total time: 0.0478  pickout: 0.0002 decision: 0.0007  bounding: 0.0464 add_domain: 0.0005
+Length of domains: 1574
+30770 branch and bound domains visited
+Current (lb-rhs): -73.54973602294922
+Cumulative time: 0.9921863079071045
+
+Iteration 19
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([-13.84055710], device='cuda:0')
+Total time: 0.0476  pickout: 0.0002 decision: 0.0007  bounding: 0.0462 add_domain: 0.0005
+Length of domains: 863
+33770 branch and bound domains visited
+Current (lb-rhs): -73.54973602294922
+Cumulative time: 1.0572636127471924
+
+Iteration 20
+Adv attack time: 0.0172s
+Batch size: 1500
+Worst bound: tensor([-31.33218193], device='cuda:0')
+Total time: 0.0325  pickout: 0.0002 decision: 0.0007  bounding: 0.0312 add_domain: 0.0005
+Length of domains: 550
+35496 branch and bound domains visited
+Current (lb-rhs): -31.332181930541992
+Cumulative time: 1.107574701309204
+
+Iteration 21
+Adv attack time: 0.0169s
+Batch size: 1500
+Worst bound: tensor([-34.11366653], device='cuda:0')
+Total time: 0.0239  pickout: 0.0002 decision: 0.0007  bounding: 0.0226 add_domain: 0.0005
+Length of domains: 322
+36596 branch and bound domains visited
+Current (lb-rhs): -34.11366653442383
+Cumulative time: 1.1488561630249023
+
+Iteration 22
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-14.24249554], device='cuda:0')
+Total time: 0.0182  pickout: 0.0002 decision: 0.0007  bounding: 0.0167 add_domain: 0.0007
+Length of domains: 171
+37240 branch and bound domains visited
+Current (lb-rhs): -14.2424955368042
+Cumulative time: 1.1842372417449951
+
+Iteration 23
+Adv attack time: 0.0172s
+Batch size: 1500
+Worst bound: tensor([-12.31832218], device='cuda:0')
+Total time: 0.0172  pickout: 0.0002 decision: 0.0007  bounding: 0.0159 add_domain: 0.0005
+Length of domains: 116
+37582 branch and bound domains visited
+Current (lb-rhs): -12.31832218170166
+Cumulative time: 1.2188222408294678
+
+Iteration 24
+Adv attack time: 0.0169s
+Batch size: 1500
+Worst bound: tensor([-5.62460995], device='cuda:0')
+Total time: 0.0177  pickout: 0.0002 decision: 0.0006  bounding: 0.0164 add_domain: 0.0005
+Length of domains: 54
+37814 branch and bound domains visited
+Current (lb-rhs): -5.62460994720459
+Cumulative time: 1.2540264129638672
+
+Iteration 25
+Adv attack time: 0.0173s
+Batch size: 1500
+Worst bound: tensor([-4.68500519], device='cuda:0')
+Total time: 0.0171  pickout: 0.0002 decision: 0.0006  bounding: 0.0158 add_domain: 0.0005
+Length of domains: 45
+37922 branch and bound domains visited
+Current (lb-rhs): -4.685005187988281
+Cumulative time: 1.2886302471160889
+
+Iteration 26
+Adv attack time: 0.0174s
+Batch size: 1500
+Worst bound: tensor([-1.19009888], device='cuda:0')
+Total time: 0.0172  pickout: 0.0002 decision: 0.0006  bounding: 0.0159 add_domain: 0.0005
+Length of domains: 12
+38012 branch and bound domains visited
+Current (lb-rhs): -1.1900988817214966
+Cumulative time: 1.3234472274780273
+
+Iteration 27
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([0.63794440], device='cuda:0')
+Total time: 0.0173  pickout: 0.0002 decision: 0.0011  bounding: 0.0158 add_domain: 0.0003
+Length of domains: 0
+38060 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is 0.3699420094490051
+Cumulative time: 1.3578948974609375
+
+Result: safe in 3.1100 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 19, vnnlib ID: 19 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=40_m=1_instance_4_3.onnx
+Using vnnlib vnnlib/property_N=40_3.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=40_3.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=40_m=1_instance_4_3.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=40_m=1_instance_4_3.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-0.59896111]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-4.97407913]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[1.01203966]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.2517 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 598.3734233379364
+##### Instance 19 first 10 spec matrices: 
+tensor([[[1.]]], dtype=torch.float64)
+thresholds: tensor([-5.98611879], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/29): BoundParams(name=/29, inputs=[], perturbed=False)
+  (/30): BoundParams(name=/30, inputs=[], perturbed=False)
+  (/31): BoundParams(name=/31, inputs=[], perturbed=False)
+  (/32): BoundParams(name=/32, inputs=[], perturbed=False)
+  (/33): BoundParams(name=/33, inputs=[], perturbed=False)
+  (/34): BoundParams(name=/34, inputs=[], perturbed=False)
+  (/35): BoundParams(name=/35, inputs=[], perturbed=False)
+  (/36): BoundParams(name=/36, inputs=[], perturbed=False)
+  (/37): BoundParams(name=/37, inputs=[], perturbed=False)
+  (/38): BoundParams(name=/38, inputs=[], perturbed=False)
+  (/39): BoundParams(name=/39, inputs=[], perturbed=False)
+  (/40): BoundParams(name=/40, inputs=[], perturbed=False)
+  (/41): BoundParams(name=/41, inputs=[], perturbed=False)
+  (/42): BoundParams(name=/42, inputs=[], perturbed=False)
+  (/43): BoundParams(name=/43, inputs=[], perturbed=False)
+  (/44): BoundParams(name=/44, inputs=[], perturbed=False)
+  (/45): BoundParams(name=/45, inputs=[], perturbed=False)
+  (/46): BoundParams(name=/46, inputs=[], perturbed=False)
+  (/47): BoundParams(name=/47, inputs=[], perturbed=False)
+  (/48): BoundParams(name=/48, inputs=[], perturbed=False)
+  (/49): BoundParams(name=/49, inputs=[], perturbed=False)
+  (/50): BoundParams(name=/50, inputs=[], perturbed=False)
+  (/51): BoundParams(name=/51, inputs=[], perturbed=False)
+  (/52): BoundParams(name=/52, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=False)
+  (/54): BoundRelu(name=/54, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=False)
+  (/56): BoundRelu(name=/56, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=False)
+  (/58): BoundRelu(name=/58, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=False)
+  (/60): BoundRelu(name=/60, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=False)
+  (/62): BoundRelu(name=/62, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=False)
+  (/64): BoundRelu(name=/64, inputs=[/input.19], perturbed=False)
+  (/input.23): BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=False)
+  (/66): BoundRelu(name=/66, inputs=[/input.23], perturbed=False)
+  (/input.27): BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=False)
+  (/68): BoundRelu(name=/68, inputs=[/input.27], perturbed=False)
+  (/input.31): BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=False)
+  (/70): BoundRelu(name=/70, inputs=[/input.31], perturbed=False)
+  (/input.35): BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=False)
+  (/72): BoundRelu(name=/72, inputs=[/input.35], perturbed=False)
+  (/input.39): BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=False)
+  (/74): BoundRelu(name=/74, inputs=[/input.39], perturbed=False)
+  (/input.43): BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=False)
+  (/76): BoundRelu(name=/76, inputs=[/input.43], perturbed=False)
+  (/77): BoundLinear(name=/77, inputs=[/76, /51, /52], perturbed=False)
+)
+Model prediction is: tensor([-0.59896111], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=True): [(BoundRelu(name=/54, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=True): [(BoundRelu(name=/56, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=True): [(BoundRelu(name=/58, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=True): [(BoundRelu(name=/60, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=True): [(BoundRelu(name=/62, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=True): [(BoundRelu(name=/64, inputs=[/input.19], perturbed=True), 0)]
+  BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=True): [(BoundRelu(name=/66, inputs=[/input.23], perturbed=True), 0)]
+  BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=True): [(BoundRelu(name=/68, inputs=[/input.27], perturbed=True), 0)]
+  BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=True): [(BoundRelu(name=/70, inputs=[/input.31], perturbed=True), 0)]
+  BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=True): [(BoundRelu(name=/72, inputs=[/input.35], perturbed=True), 0)]
+  BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=True): [(BoundRelu(name=/74, inputs=[/input.39], perturbed=True), 0)]
+  BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=True): [(BoundRelu(name=/76, inputs=[/input.43], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/54, inputs=[/input], perturbed=True)
+   BoundRelu(name=/56, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/58, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/60, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/62, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/64, inputs=[/input.19], perturbed=True)
+   BoundRelu(name=/66, inputs=[/input.23], perturbed=True)
+   BoundRelu(name=/68, inputs=[/input.27], perturbed=True)
+   BoundRelu(name=/70, inputs=[/input.31], perturbed=True)
+   BoundRelu(name=/72, inputs=[/input.35], perturbed=True)
+   BoundRelu(name=/74, inputs=[/input.39], perturbed=True)
+   BoundRelu(name=/76, inputs=[/input.43], perturbed=True)
+initial forward+backward bounds: tensor([[-13.26048660]], device='cuda:0')
+Worst class: (+ rhs) -13.260486602783203
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-37009.73046875], device='cuda:0')
+Total time: 0.0170  pickout: 0.0002 decision: 0.0012  bounding: 0.0152 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -37009.73046875
+Cumulative time: 0.0762016773223877
+
+Iteration 2
+Adv attack time: 0.0161s
+Batch size: 1500
+Worst bound: tensor([-16460.57617188], device='cuda:0')
+Total time: 0.0179  pickout: 0.0002 decision: 0.0011  bounding: 0.0162 add_domain: 0.0005
+Length of domains: 16
+20 branch and bound domains visited
+Current (lb-rhs): -16460.576171875
+Cumulative time: 0.11077880859375
+
+Iteration 3
+Adv attack time: 0.0172s
+Batch size: 1500
+Worst bound: tensor([-4486.82226562], device='cuda:0')
+Total time: 0.0179  pickout: 0.0002 decision: 0.0011  bounding: 0.0161 add_domain: 0.0005
+Length of domains: 64
+84 branch and bound domains visited
+Current (lb-rhs): -4486.822265625
+Cumulative time: 0.1462714672088623
+
+Iteration 4
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([-2635.87719727], device='cuda:0')
+Total time: 0.0170  pickout: 0.0002 decision: 0.0006  bounding: 0.0157 add_domain: 0.0005
+Length of domains: 128
+212 branch and bound domains visited
+Current (lb-rhs): -2635.877197265625
+Cumulative time: 0.18063688278198242
+
+Iteration 5
+Adv attack time: 0.0173s
+Batch size: 1500
+Worst bound: tensor([-1135.18994141], device='cuda:0')
+Total time: 0.0174  pickout: 0.0002 decision: 0.0007  bounding: 0.0161 add_domain: 0.0005
+Length of domains: 249
+468 branch and bound domains visited
+Current (lb-rhs): -1135.18994140625
+Cumulative time: 0.21555709838867188
+
+Iteration 6
+Adv attack time: 0.0172s
+Batch size: 1500
+Worst bound: tensor([-990.01940918], device='cuda:0')
+Total time: 0.0174  pickout: 0.0002 decision: 0.0007  bounding: 0.0160 add_domain: 0.0005
+Length of domains: 452
+966 branch and bound domains visited
+Current (lb-rhs): -990.0194091796875
+Cumulative time: 0.2503223419189453
+
+Iteration 7
+Adv attack time: 0.0169s
+Batch size: 1500
+Worst bound: tensor([-777.71618652], device='cuda:0')
+Total time: 0.0225  pickout: 0.0002 decision: 0.0007  bounding: 0.0211 add_domain: 0.0005
+Length of domains: 547
+1870 branch and bound domains visited
+Current (lb-rhs): -777.7161865234375
+Cumulative time: 0.28989577293395996
+
+Iteration 8
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([-366.33648682], device='cuda:0')
+Total time: 0.0247  pickout: 0.0002 decision: 0.0007  bounding: 0.0233 add_domain: 0.0005
+Length of domains: 702
+2964 branch and bound domains visited
+Current (lb-rhs): -366.33648681640625
+Cumulative time: 0.33186793327331543
+
+Iteration 9
+Adv attack time: 0.0169s
+Batch size: 1500
+Worst bound: tensor([-233.39080811], device='cuda:0')
+Total time: 0.0284  pickout: 0.0002 decision: 0.0007  bounding: 0.0270 add_domain: 0.0005
+Length of domains: 564
+4368 branch and bound domains visited
+Current (lb-rhs): -233.39080810546875
+Cumulative time: 0.3773818016052246
+
+Iteration 10
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-131.84576416], device='cuda:0')
+Total time: 0.0242  pickout: 0.0002 decision: 0.0006  bounding: 0.0228 add_domain: 0.0005
+Length of domains: 701
+5496 branch and bound domains visited
+Current (lb-rhs): -131.84576416015625
+Cumulative time: 0.41877317428588867
+
+Iteration 11
+Adv attack time: 0.0181s
+Batch size: 1500
+Worst bound: tensor([-75.78668213], device='cuda:0')
+Total time: 0.0276  pickout: 0.0002 decision: 0.0007  bounding: 0.0262 add_domain: 0.0005
+Length of domains: 598
+6898 branch and bound domains visited
+Current (lb-rhs): -75.78668212890625
+Cumulative time: 0.4647846221923828
+
+Iteration 12
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-38.83351517], device='cuda:0')
+Total time: 0.0251  pickout: 0.0002 decision: 0.0007  bounding: 0.0238 add_domain: 0.0005
+Length of domains: 872
+8094 branch and bound domains visited
+Current (lb-rhs): -38.83351516723633
+Cumulative time: 0.5071346759796143
+
+Iteration 13
+Adv attack time: 0.0170s
+Batch size: 1500
+Worst bound: tensor([-31.69415665], device='cuda:0')
+Total time: 0.0329  pickout: 0.0002 decision: 0.0007  bounding: 0.0316 add_domain: 0.0005
+Length of domains: 644
+9838 branch and bound domains visited
+Current (lb-rhs): -31.694156646728516
+Cumulative time: 0.5573053359985352
+
+Iteration 14
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([-11.92340088], device='cuda:0')
+Total time: 0.0267  pickout: 0.0002 decision: 0.0007  bounding: 0.0253 add_domain: 0.0005
+Length of domains: 625
+11126 branch and bound domains visited
+Current (lb-rhs): -11.92340087890625
+Cumulative time: 0.6012725830078125
+
+Iteration 15
+Adv attack time: 0.0171s
+Batch size: 1500
+Worst bound: tensor([-7.21409082], device='cuda:0')
+Total time: 0.0261  pickout: 0.0002 decision: 0.0007  bounding: 0.0248 add_domain: 0.0005
+Length of domains: 124
+12376 branch and bound domains visited
+Current (lb-rhs): -7.214090824127197
+Cumulative time: 0.6446595191955566
+
+Iteration 16
+Adv attack time: 0.0169s
+Batch size: 1500
+Worst bound: tensor([-3.52630377], device='cuda:0')
+Total time: 0.0171  pickout: 0.0002 decision: 0.0006  bounding: 0.0158 add_domain: 0.0005
+Length of domains: 4
+12624 branch and bound domains visited
+Current (lb-rhs): -3.526303768157959
+Cumulative time: 0.6789183616638184
+
+Iteration 17
+Adv attack time: 0.0159s
+Batch size: 1500
+Worst bound: tensor([2.70111537], device='cuda:0')
+Total time: 0.0170  pickout: 0.0002 decision: 0.0011  bounding: 0.0154 add_domain: 0.0002
+Length of domains: 0
+12640 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is -3.285003423690796
+Cumulative time: 0.7118544578552246
+
+Result: safe in 2.5330 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 20, vnnlib ID: 20 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=48_m=1_instance_5_0.onnx
+Using vnnlib vnnlib/property_N=48_0.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=48_0.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=48_m=1_instance_5_0.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=48_m=1_instance_5_0.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 2.6483 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 21, vnnlib ID: 21 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=48_m=1_instance_5_1.onnx
+Using vnnlib vnnlib/property_N=48_1.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=48_1.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=48_m=1_instance_5_1.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=48_m=1_instance_5_1.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 2.6251 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 22, vnnlib ID: 22 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=48_m=1_instance_5_2.onnx
+Using vnnlib vnnlib/property_N=48_2.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=48_2.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=48_m=1_instance_5_2.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=48_m=1_instance_5_2.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-1.66150284]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-0.72866344]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[2.20677519]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.2530 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 597.0498645305634
+##### Instance 22 first 10 spec matrices: 
+tensor([[[-1.]]], dtype=torch.float64)
+thresholds: tensor([-1.47811162], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/29): BoundParams(name=/29, inputs=[], perturbed=False)
+  (/30): BoundParams(name=/30, inputs=[], perturbed=False)
+  (/31): BoundParams(name=/31, inputs=[], perturbed=False)
+  (/32): BoundParams(name=/32, inputs=[], perturbed=False)
+  (/33): BoundParams(name=/33, inputs=[], perturbed=False)
+  (/34): BoundParams(name=/34, inputs=[], perturbed=False)
+  (/35): BoundParams(name=/35, inputs=[], perturbed=False)
+  (/36): BoundParams(name=/36, inputs=[], perturbed=False)
+  (/37): BoundParams(name=/37, inputs=[], perturbed=False)
+  (/38): BoundParams(name=/38, inputs=[], perturbed=False)
+  (/39): BoundParams(name=/39, inputs=[], perturbed=False)
+  (/40): BoundParams(name=/40, inputs=[], perturbed=False)
+  (/41): BoundParams(name=/41, inputs=[], perturbed=False)
+  (/42): BoundParams(name=/42, inputs=[], perturbed=False)
+  (/43): BoundParams(name=/43, inputs=[], perturbed=False)
+  (/44): BoundParams(name=/44, inputs=[], perturbed=False)
+  (/45): BoundParams(name=/45, inputs=[], perturbed=False)
+  (/46): BoundParams(name=/46, inputs=[], perturbed=False)
+  (/47): BoundParams(name=/47, inputs=[], perturbed=False)
+  (/48): BoundParams(name=/48, inputs=[], perturbed=False)
+  (/49): BoundParams(name=/49, inputs=[], perturbed=False)
+  (/50): BoundParams(name=/50, inputs=[], perturbed=False)
+  (/51): BoundParams(name=/51, inputs=[], perturbed=False)
+  (/52): BoundParams(name=/52, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=False)
+  (/54): BoundRelu(name=/54, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=False)
+  (/56): BoundRelu(name=/56, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=False)
+  (/58): BoundRelu(name=/58, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=False)
+  (/60): BoundRelu(name=/60, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=False)
+  (/62): BoundRelu(name=/62, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=False)
+  (/64): BoundRelu(name=/64, inputs=[/input.19], perturbed=False)
+  (/input.23): BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=False)
+  (/66): BoundRelu(name=/66, inputs=[/input.23], perturbed=False)
+  (/input.27): BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=False)
+  (/68): BoundRelu(name=/68, inputs=[/input.27], perturbed=False)
+  (/input.31): BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=False)
+  (/70): BoundRelu(name=/70, inputs=[/input.31], perturbed=False)
+  (/input.35): BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=False)
+  (/72): BoundRelu(name=/72, inputs=[/input.35], perturbed=False)
+  (/input.39): BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=False)
+  (/74): BoundRelu(name=/74, inputs=[/input.39], perturbed=False)
+  (/input.43): BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=False)
+  (/76): BoundRelu(name=/76, inputs=[/input.43], perturbed=False)
+  (/77): BoundLinear(name=/77, inputs=[/76, /51, /52], perturbed=False)
+)
+Model prediction is: tensor([-1.66150284], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=True): [(BoundRelu(name=/54, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=True): [(BoundRelu(name=/56, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=True): [(BoundRelu(name=/58, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=True): [(BoundRelu(name=/60, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=True): [(BoundRelu(name=/62, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=True): [(BoundRelu(name=/64, inputs=[/input.19], perturbed=True), 0)]
+  BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=True): [(BoundRelu(name=/66, inputs=[/input.23], perturbed=True), 0)]
+  BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=True): [(BoundRelu(name=/68, inputs=[/input.27], perturbed=True), 0)]
+  BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=True): [(BoundRelu(name=/70, inputs=[/input.31], perturbed=True), 0)]
+  BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=True): [(BoundRelu(name=/72, inputs=[/input.35], perturbed=True), 0)]
+  BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=True): [(BoundRelu(name=/74, inputs=[/input.39], perturbed=True), 0)]
+  BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=True): [(BoundRelu(name=/76, inputs=[/input.43], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/54, inputs=[/input], perturbed=True)
+   BoundRelu(name=/56, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/58, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/60, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/62, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/64, inputs=[/input.19], perturbed=True)
+   BoundRelu(name=/66, inputs=[/input.23], perturbed=True)
+   BoundRelu(name=/68, inputs=[/input.27], perturbed=True)
+   BoundRelu(name=/70, inputs=[/input.31], perturbed=True)
+   BoundRelu(name=/72, inputs=[/input.35], perturbed=True)
+   BoundRelu(name=/74, inputs=[/input.39], perturbed=True)
+   BoundRelu(name=/76, inputs=[/input.43], perturbed=True)
+initial forward+backward bounds: tensor([[-2.34425592]], device='cuda:0')
+Worst class: (+ rhs) -2.3442559242248535
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-49528.96875000], device='cuda:0')
+Total time: 0.0174  pickout: 0.0002 decision: 0.0012  bounding: 0.0155 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -49528.96875
+Cumulative time: 0.09772729873657227
+
+Iteration 2
+Adv attack time: 0.0177s
+Batch size: 1500
+Worst bound: tensor([-15685.80273438], device='cuda:0')
+Total time: 0.0174  pickout: 0.0002 decision: 0.0011  bounding: 0.0156 add_domain: 0.0005
+Length of domains: 16
+20 branch and bound domains visited
+Current (lb-rhs): -15685.802734375
+Cumulative time: 0.13327789306640625
+
+Iteration 3
+Adv attack time: 0.0196s
+Batch size: 1500
+Worst bound: tensor([-5175.51806641], device='cuda:0')
+Total time: 0.0178  pickout: 0.0002 decision: 0.0011  bounding: 0.0160 add_domain: 0.0005
+Length of domains: 64
+84 branch and bound domains visited
+Current (lb-rhs): -5175.51806640625
+Cumulative time: 0.1712665557861328
+
+Iteration 4
+Adv attack time: 0.0199s
+Batch size: 1500
+Worst bound: tensor([-2781.25927734], device='cuda:0')
+Total time: 0.0168  pickout: 0.0002 decision: 0.0006  bounding: 0.0155 add_domain: 0.0005
+Length of domains: 128
+212 branch and bound domains visited
+Current (lb-rhs): -2781.25927734375
+Cumulative time: 0.20820403099060059
+
+Iteration 5
+Adv attack time: 0.0199s
+Batch size: 1500
+Worst bound: tensor([-2097.09375000], device='cuda:0')
+Total time: 0.0169  pickout: 0.0002 decision: 0.0006  bounding: 0.0156 add_domain: 0.0005
+Length of domains: 256
+468 branch and bound domains visited
+Current (lb-rhs): -2097.09375
+Cumulative time: 0.2452864646911621
+
+Iteration 6
+Adv attack time: 0.0197s
+Batch size: 1500
+Worst bound: tensor([-1489.49755859], device='cuda:0')
+Total time: 0.0214  pickout: 0.0002 decision: 0.0006  bounding: 0.0201 add_domain: 0.0005
+Length of domains: 473
+980 branch and bound domains visited
+Current (lb-rhs): -1489.49755859375
+Cumulative time: 0.29236674308776855
+
+Iteration 7
+Adv attack time: 0.0304s
+Batch size: 1500
+Worst bound: tensor([-779.24139404], device='cuda:0')
+Total time: 0.0317  pickout: 0.0002 decision: 0.0007  bounding: 0.0304 add_domain: 0.0005
+Length of domains: 605
+1926 branch and bound domains visited
+Current (lb-rhs): -779.2413940429688
+Cumulative time: 0.354644775390625
+
+Iteration 8
+Adv attack time: 0.0196s
+Batch size: 1500
+Worst bound: tensor([-500.56814575], device='cuda:0')
+Total time: 0.0379  pickout: 0.0002 decision: 0.0007  bounding: 0.0365 add_domain: 0.0005
+Length of domains: 564
+3136 branch and bound domains visited
+Current (lb-rhs): -500.5681457519531
+Cumulative time: 0.41229915618896484
+
+Iteration 9
+Adv attack time: 0.0195s
+Batch size: 1500
+Worst bound: tensor([-262.41629028], device='cuda:0')
+Total time: 0.0342  pickout: 0.0002 decision: 0.0007  bounding: 0.0328 add_domain: 0.0005
+Length of domains: 407
+4264 branch and bound domains visited
+Current (lb-rhs): -262.4162902832031
+Cumulative time: 0.4661259651184082
+
+Iteration 10
+Adv attack time: 0.0193s
+Batch size: 1500
+Worst bound: tensor([-182.50234985], device='cuda:0')
+Total time: 0.0278  pickout: 0.0002 decision: 0.0007  bounding: 0.0264 add_domain: 0.0005
+Length of domains: 396
+5078 branch and bound domains visited
+Current (lb-rhs): -182.50234985351562
+Cumulative time: 0.51344895362854
+
+Iteration 11
+Adv attack time: 0.0193s
+Batch size: 1500
+Worst bound: tensor([-148.67854309], device='cuda:0')
+Total time: 0.0275  pickout: 0.0002 decision: 0.0007  bounding: 0.0262 add_domain: 0.0005
+Length of domains: 525
+5870 branch and bound domains visited
+Current (lb-rhs): -148.6785430908203
+Cumulative time: 0.5604722499847412
+
+Iteration 12
+Adv attack time: 0.0191s
+Batch size: 1500
+Worst bound: tensor([-69.12377930], device='cuda:0')
+Total time: 0.0332  pickout: 0.0002 decision: 0.0006  bounding: 0.0319 add_domain: 0.0005
+Length of domains: 657
+6920 branch and bound domains visited
+Current (lb-rhs): -69.123779296875
+Cumulative time: 0.6130237579345703
+
+Iteration 13
+Adv attack time: 0.0192s
+Batch size: 1500
+Worst bound: tensor([-53.35343552], device='cuda:0')
+Total time: 0.0396  pickout: 0.0002 decision: 0.0007  bounding: 0.0382 add_domain: 0.0005
+Length of domains: 874
+8234 branch and bound domains visited
+Current (lb-rhs): -53.35343551635742
+Cumulative time: 0.6722500324249268
+
+Iteration 14
+Adv attack time: 0.0193s
+Batch size: 1500
+Worst bound: tensor([-32.66025162], device='cuda:0')
+Total time: 0.0476  pickout: 0.0002 decision: 0.0007  bounding: 0.0463 add_domain: 0.0005
+Length of domains: 952
+9982 branch and bound domains visited
+Current (lb-rhs): -32.66025161743164
+Cumulative time: 0.7396128177642822
+
+Iteration 15
+Adv attack time: 0.0196s
+Batch size: 1500
+Worst bound: tensor([-19.35088348], device='cuda:0')
+Total time: 0.0517  pickout: 0.0002 decision: 0.0007  bounding: 0.0502 add_domain: 0.0007
+Length of domains: 1067
+11886 branch and bound domains visited
+Current (lb-rhs): -19.35088348388672
+Cumulative time: 0.8113024234771729
+
+Iteration 16
+Adv attack time: 0.0195s
+Batch size: 1500
+Worst bound: tensor([-10.59581470], device='cuda:0')
+Total time: 0.0573  pickout: 0.0002 decision: 0.0007  bounding: 0.0559 add_domain: 0.0005
+Length of domains: 747
+14020 branch and bound domains visited
+Current (lb-rhs): -10.59581470489502
+Cumulative time: 0.8884785175323486
+
+Iteration 17
+Adv attack time: 0.0195s
+Batch size: 1500
+Worst bound: tensor([-7.94248819], device='cuda:0')
+Total time: 0.0434  pickout: 0.0002 decision: 0.0007  bounding: 0.0420 add_domain: 0.0005
+Length of domains: 942
+15514 branch and bound domains visited
+Current (lb-rhs): -7.942488193511963
+Cumulative time: 0.9518742561340332
+
+Iteration 18
+Adv attack time: 0.0197s
+Batch size: 1500
+Worst bound: tensor([-2.98922062], device='cuda:0')
+Total time: 0.0518  pickout: 0.0002 decision: 0.0009  bounding: 0.0502 add_domain: 0.0005
+Length of domains: 510
+17398 branch and bound domains visited
+Current (lb-rhs): -2.98922061920166
+Cumulative time: 1.0237741470336914
+
+Iteration 19
+Adv attack time: 0.0194s
+Batch size: 1500
+Worst bound: tensor([-0.23451161], device='cuda:0')
+Total time: 0.0319  pickout: 0.0002 decision: 0.0006  bounding: 0.0306 add_domain: 0.0005
+Length of domains: 42
+18418 branch and bound domains visited
+Current (lb-rhs): -0.2345116138458252
+Cumulative time: 1.0755367279052734
+
+Iteration 20
+Adv attack time: 0.0194s
+Batch size: 1500
+Worst bound: tensor([1.18564618], device='cuda:0')
+Total time: 0.0168  pickout: 0.0002 decision: 0.0006  bounding: 0.0157 add_domain: 0.0002
+Length of domains: 0
+18502 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is -0.292465478181839
+Cumulative time: 1.1117970943450928
+
+Result: safe in 4.2793 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 23, vnnlib ID: 23 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=48_m=1_instance_5_3.onnx
+Using vnnlib vnnlib/property_N=48_3.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=48_3.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=48_m=1_instance_5_3.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=48_m=1_instance_5_3.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 2.6518 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 24, vnnlib ID: 24 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=56_m=1_instance_6_0.onnx
+Using vnnlib vnnlib/property_N=56_0.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=56_0.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=56_m=1_instance_6_0.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=56_m=1_instance_6_0.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-1.31127715]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-1.17702579]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[0.45894694]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.2614 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 594.716814994812
+##### Instance 24 first 10 spec matrices: 
+tensor([[[-1.]]], dtype=torch.float64)
+thresholds: tensor([0.71807885], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/29): BoundParams(name=/29, inputs=[], perturbed=False)
+  (/30): BoundParams(name=/30, inputs=[], perturbed=False)
+  (/31): BoundParams(name=/31, inputs=[], perturbed=False)
+  (/32): BoundParams(name=/32, inputs=[], perturbed=False)
+  (/33): BoundParams(name=/33, inputs=[], perturbed=False)
+  (/34): BoundParams(name=/34, inputs=[], perturbed=False)
+  (/35): BoundParams(name=/35, inputs=[], perturbed=False)
+  (/36): BoundParams(name=/36, inputs=[], perturbed=False)
+  (/37): BoundParams(name=/37, inputs=[], perturbed=False)
+  (/38): BoundParams(name=/38, inputs=[], perturbed=False)
+  (/39): BoundParams(name=/39, inputs=[], perturbed=False)
+  (/40): BoundParams(name=/40, inputs=[], perturbed=False)
+  (/41): BoundParams(name=/41, inputs=[], perturbed=False)
+  (/42): BoundParams(name=/42, inputs=[], perturbed=False)
+  (/43): BoundParams(name=/43, inputs=[], perturbed=False)
+  (/44): BoundParams(name=/44, inputs=[], perturbed=False)
+  (/45): BoundParams(name=/45, inputs=[], perturbed=False)
+  (/46): BoundParams(name=/46, inputs=[], perturbed=False)
+  (/47): BoundParams(name=/47, inputs=[], perturbed=False)
+  (/48): BoundParams(name=/48, inputs=[], perturbed=False)
+  (/49): BoundParams(name=/49, inputs=[], perturbed=False)
+  (/50): BoundParams(name=/50, inputs=[], perturbed=False)
+  (/51): BoundParams(name=/51, inputs=[], perturbed=False)
+  (/52): BoundParams(name=/52, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=False)
+  (/54): BoundRelu(name=/54, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=False)
+  (/56): BoundRelu(name=/56, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=False)
+  (/58): BoundRelu(name=/58, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=False)
+  (/60): BoundRelu(name=/60, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=False)
+  (/62): BoundRelu(name=/62, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=False)
+  (/64): BoundRelu(name=/64, inputs=[/input.19], perturbed=False)
+  (/input.23): BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=False)
+  (/66): BoundRelu(name=/66, inputs=[/input.23], perturbed=False)
+  (/input.27): BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=False)
+  (/68): BoundRelu(name=/68, inputs=[/input.27], perturbed=False)
+  (/input.31): BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=False)
+  (/70): BoundRelu(name=/70, inputs=[/input.31], perturbed=False)
+  (/input.35): BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=False)
+  (/72): BoundRelu(name=/72, inputs=[/input.35], perturbed=False)
+  (/input.39): BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=False)
+  (/74): BoundRelu(name=/74, inputs=[/input.39], perturbed=False)
+  (/input.43): BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=False)
+  (/76): BoundRelu(name=/76, inputs=[/input.43], perturbed=False)
+  (/77): BoundLinear(name=/77, inputs=[/76, /51, /52], perturbed=False)
+)
+Model prediction is: tensor([-1.31127715], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=True): [(BoundRelu(name=/54, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=True): [(BoundRelu(name=/56, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=True): [(BoundRelu(name=/58, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=True): [(BoundRelu(name=/60, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=True): [(BoundRelu(name=/62, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=True): [(BoundRelu(name=/64, inputs=[/input.19], perturbed=True), 0)]
+  BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=True): [(BoundRelu(name=/66, inputs=[/input.23], perturbed=True), 0)]
+  BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=True): [(BoundRelu(name=/68, inputs=[/input.27], perturbed=True), 0)]
+  BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=True): [(BoundRelu(name=/70, inputs=[/input.31], perturbed=True), 0)]
+  BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=True): [(BoundRelu(name=/72, inputs=[/input.35], perturbed=True), 0)]
+  BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=True): [(BoundRelu(name=/74, inputs=[/input.39], perturbed=True), 0)]
+  BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=True): [(BoundRelu(name=/76, inputs=[/input.43], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/54, inputs=[/input], perturbed=True)
+   BoundRelu(name=/56, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/58, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/60, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/62, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/64, inputs=[/input.19], perturbed=True)
+   BoundRelu(name=/66, inputs=[/input.23], perturbed=True)
+   BoundRelu(name=/68, inputs=[/input.27], perturbed=True)
+   BoundRelu(name=/70, inputs=[/input.31], perturbed=True)
+   BoundRelu(name=/72, inputs=[/input.35], perturbed=True)
+   BoundRelu(name=/74, inputs=[/input.39], perturbed=True)
+   BoundRelu(name=/76, inputs=[/input.43], perturbed=True)
+initial forward+backward bounds: tensor([[-1.60987663]], device='cuda:0')
+Worst class: (+ rhs) -1.6098766326904297
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-21102.84179688], device='cuda:0')
+Total time: 0.0174  pickout: 0.0002 decision: 0.0012  bounding: 0.0156 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -21102.841796875
+Cumulative time: 0.12295866012573242
+
+Iteration 2
+Adv attack time: 0.0194s
+Batch size: 1500
+Worst bound: tensor([-5891.37109375], device='cuda:0')
+Total time: 0.0221  pickout: 0.0002 decision: 0.0011  bounding: 0.0203 add_domain: 0.0005
+Length of domains: 16
+20 branch and bound domains visited
+Current (lb-rhs): -5891.37109375
+Cumulative time: 0.16487693786621094
+
+Iteration 3
+Adv attack time: 0.0284s
+Batch size: 1500
+Worst bound: tensor([-1924.44934082], device='cuda:0')
+Total time: 0.0238  pickout: 0.0002 decision: 0.0011  bounding: 0.0221 add_domain: 0.0005
+Length of domains: 64
+84 branch and bound domains visited
+Current (lb-rhs): -1924.4493408203125
+Cumulative time: 0.21763181686401367
+
+Iteration 4
+Adv attack time: 0.0257s
+Batch size: 1500
+Worst bound: tensor([-1340.98974609], device='cuda:0')
+Total time: 0.0223  pickout: 0.0002 decision: 0.0006  bounding: 0.0210 add_domain: 0.0005
+Length of domains: 128
+212 branch and bound domains visited
+Current (lb-rhs): -1340.98974609375
+Cumulative time: 0.26663684844970703
+
+Iteration 5
+Adv attack time: 0.0256s
+Batch size: 1500
+Worst bound: tensor([-873.14703369], device='cuda:0')
+Total time: 0.0228  pickout: 0.0002 decision: 0.0006  bounding: 0.0215 add_domain: 0.0005
+Length of domains: 256
+468 branch and bound domains visited
+Current (lb-rhs): -873.1470336914062
+Cumulative time: 0.3154623508453369
+
+Iteration 6
+Adv attack time: 0.0255s
+Batch size: 1500
+Worst bound: tensor([-575.92968750], device='cuda:0')
+Total time: 0.0322  pickout: 0.0002 decision: 0.0007  bounding: 0.0309 add_domain: 0.0005
+Length of domains: 504
+980 branch and bound domains visited
+Current (lb-rhs): -575.9296875
+Cumulative time: 0.37361979484558105
+
+Iteration 7
+Adv attack time: 0.0258s
+Batch size: 1500
+Worst bound: tensor([-382.25262451], device='cuda:0')
+Total time: 0.0508  pickout: 0.0002 decision: 0.0007  bounding: 0.0495 add_domain: 0.0005
+Length of domains: 896
+1988 branch and bound domains visited
+Current (lb-rhs): -382.25262451171875
+Cumulative time: 0.4507110118865967
+
+Iteration 8
+Adv attack time: 0.0261s
+Batch size: 1500
+Worst bound: tensor([-343.82055664], device='cuda:0')
+Total time: 0.0838  pickout: 0.0002 decision: 0.0007  bounding: 0.0822 add_domain: 0.0007
+Length of domains: 1339
+3780 branch and bound domains visited
+Current (lb-rhs): -343.820556640625
+Cumulative time: 0.5609831809997559
+
+Iteration 9
+Adv attack time: 0.0260s
+Batch size: 1500
+Worst bound: tensor([-199.57514954], device='cuda:0')
+Total time: 0.1171  pickout: 0.0002 decision: 0.0007  bounding: 0.1157 add_domain: 0.0005
+Length of domains: 1001
+6458 branch and bound domains visited
+Current (lb-rhs): -199.5751495361328
+Cumulative time: 0.704556941986084
+
+Iteration 10
+Adv attack time: 0.0261s
+Batch size: 1500
+Worst bound: tensor([-84.03234863], device='cuda:0')
+Total time: 0.0910  pickout: 0.0002 decision: 0.0007  bounding: 0.0896 add_domain: 0.0005
+Length of domains: 889
+8460 branch and bound domains visited
+Current (lb-rhs): -84.0323486328125
+Cumulative time: 0.8222432136535645
+
+Iteration 11
+Adv attack time: 0.0258s
+Batch size: 1500
+Worst bound: tensor([-72.01977539], device='cuda:0')
+Total time: 0.0819  pickout: 0.0002 decision: 0.0007  bounding: 0.0805 add_domain: 0.0005
+Length of domains: 930
+10238 branch and bound domains visited
+Current (lb-rhs): -72.019775390625
+Cumulative time: 0.9303936958312988
+
+Iteration 12
+Adv attack time: 0.0260s
+Batch size: 1500
+Worst bound: tensor([-56.17603302], device='cuda:0')
+Total time: 0.0859  pickout: 0.0002 decision: 0.0007  bounding: 0.0846 add_domain: 0.0005
+Length of domains: 1226
+12098 branch and bound domains visited
+Current (lb-rhs): -56.17603302001953
+Cumulative time: 1.0427358150482178
+
+Iteration 13
+Adv attack time: 0.0265s
+Batch size: 1500
+Worst bound: tensor([-39.31791687], device='cuda:0')
+Total time: 0.1105  pickout: 0.0002 decision: 0.0007  bounding: 0.1090 add_domain: 0.0006
+Length of domains: 1498
+14550 branch and bound domains visited
+Current (lb-rhs): -39.31791687011719
+Cumulative time: 1.1803112030029297
+
+Iteration 14
+Adv attack time: 0.0257s
+Batch size: 1500
+Worst bound: tensor([-20.45119286], device='cuda:0')
+Total time: 0.1298  pickout: 0.0002 decision: 0.0007  bounding: 0.1283 add_domain: 0.0006
+Length of domains: 1732
+17546 branch and bound domains visited
+Current (lb-rhs): -20.45119285583496
+Cumulative time: 1.3366622924804688
+
+Iteration 15
+Adv attack time: 0.0258s
+Batch size: 1500
+Worst bound: tensor([-10.02722836], device='cuda:0')
+Total time: 0.1274  pickout: 0.0002 decision: 0.0007  bounding: 0.1259 add_domain: 0.0005
+Length of domains: 1666
+20546 branch and bound domains visited
+Current (lb-rhs): -17.03092384338379
+Cumulative time: 1.490323781967163
+
+Iteration 16
+Adv attack time: 0.0258s
+Batch size: 1500
+Worst bound: tensor([-9.37409210], device='cuda:0')
+Total time: 0.1259  pickout: 0.0002 decision: 0.0007  bounding: 0.1244 add_domain: 0.0006
+Length of domains: 1845
+23546 branch and bound domains visited
+Current (lb-rhs): -17.03092384338379
+Cumulative time: 1.6424362659454346
+
+Iteration 17
+Adv attack time: 0.0260s
+Batch size: 1500
+Worst bound: tensor([-6.32374191], device='cuda:0')
+Total time: 0.1257  pickout: 0.0002 decision: 0.0007  bounding: 0.1243 add_domain: 0.0006
+Length of domains: 1660
+26546 branch and bound domains visited
+Current (lb-rhs): -17.03092384338379
+Cumulative time: 1.7945842742919922
+
+Iteration 18
+Adv attack time: 0.0261s
+Batch size: 1500
+Worst bound: tensor([-5.85601616], device='cuda:0')
+Total time: 0.1253  pickout: 0.0002 decision: 0.0007  bounding: 0.1239 add_domain: 0.0005
+Length of domains: 1669
+29546 branch and bound domains visited
+Current (lb-rhs): -17.03092384338379
+Cumulative time: 1.9464037418365479
+
+Iteration 19
+Adv attack time: 0.0262s
+Batch size: 1500
+Worst bound: tensor([-3.18975854], device='cuda:0')
+Total time: 0.1263  pickout: 0.0002 decision: 0.0007  bounding: 0.1249 add_domain: 0.0006
+Length of domains: 912
+32546 branch and bound domains visited
+Current (lb-rhs): -17.03092384338379
+Cumulative time: 2.0994441509246826
+
+Iteration 20
+Adv attack time: 0.0265s
+Batch size: 1500
+Worst bound: tensor([-9.15458012], device='cuda:0')
+Total time: 0.0837  pickout: 0.0002 decision: 0.0007  bounding: 0.0822 add_domain: 0.0005
+Length of domains: 603
+34370 branch and bound domains visited
+Current (lb-rhs): -9.154580116271973
+Cumulative time: 2.210326671600342
+
+Iteration 21
+Adv attack time: 0.0259s
+Batch size: 1500
+Worst bound: tensor([-8.61609554], device='cuda:0')
+Total time: 0.0597  pickout: 0.0002 decision: 0.0007  bounding: 0.0584 add_domain: 0.0005
+Length of domains: 230
+35576 branch and bound domains visited
+Current (lb-rhs): -8.616095542907715
+Cumulative time: 2.296401262283325
+
+Iteration 22
+Adv attack time: 0.0264s
+Batch size: 1500
+Worst bound: tensor([-3.50997543], device='cuda:0')
+Total time: 0.0325  pickout: 0.0002 decision: 0.0006  bounding: 0.0312 add_domain: 0.0005
+Length of domains: 172
+36036 branch and bound domains visited
+Current (lb-rhs): -3.5099754333496094
+Cumulative time: 2.355757474899292
+
+Iteration 23
+Adv attack time: 0.0254s
+Batch size: 1500
+Worst bound: tensor([-2.09437799], device='cuda:0')
+Total time: 0.0281  pickout: 0.0002 decision: 0.0006  bounding: 0.0268 add_domain: 0.0005
+Length of domains: 162
+36380 branch and bound domains visited
+Current (lb-rhs): -2.0943779945373535
+Cumulative time: 2.4097580909729004
+
+Iteration 24
+Adv attack time: 0.0254s
+Batch size: 1500
+Worst bound: tensor([-0.71265376], device='cuda:0')
+Total time: 0.0280  pickout: 0.0002 decision: 0.0006  bounding: 0.0267 add_domain: 0.0005
+Length of domains: 67
+36704 branch and bound domains visited
+Current (lb-rhs): -0.7126537561416626
+Cumulative time: 2.4635584354400635
+
+Iteration 25
+Adv attack time: 0.0254s
+Batch size: 1500
+Worst bound: tensor([-0.39563084], device='cuda:0')
+Total time: 0.0255  pickout: 0.0002 decision: 0.0006  bounding: 0.0242 add_domain: 0.0005
+Length of domains: 38
+36838 branch and bound domains visited
+Current (lb-rhs): -0.3956308364868164
+Cumulative time: 2.5148766040802
+
+Iteration 26
+Adv attack time: 0.0254s
+Batch size: 1500
+Worst bound: tensor([0.12155956], device='cuda:0')
+Total time: 0.0255  pickout: 0.0002 decision: 0.0006  bounding: 0.0245 add_domain: 0.0002
+Length of domains: 0
+36914 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is 0.8396384119987488
+Cumulative time: 2.565908432006836
+
+Result: safe in 8.0667 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 25, vnnlib ID: 25 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=56_m=1_instance_6_1.onnx
+Using vnnlib vnnlib/property_N=56_1.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=56_1.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=56_m=1_instance_6_1.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=56_m=1_instance_6_1.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 4.9135 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 26, vnnlib ID: 26 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=56_m=1_instance_6_2.onnx
+Using vnnlib vnnlib/property_N=56_2.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=56_2.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=56_m=1_instance_6_2.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=56_m=1_instance_6_2.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 4.9115 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 27, vnnlib ID: 27 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=56_m=1_instance_6_3.onnx
+Using vnnlib vnnlib/property_N=56_3.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=56_3.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=56_m=1_instance_6_3.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=56_m=1_instance_6_3.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 4.9790 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 28, vnnlib ID: 28 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=64_m=1_instance_7_0.onnx
+Using vnnlib vnnlib/property_N=64_0.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=64_0.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=64_m=1_instance_7_0.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=64_m=1_instance_7_0.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-0.76622391]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-3.80628395]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[0.77091551]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.2807 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 591.21515417099
+##### Instance 28 first 10 spec matrices: 
+tensor([[[1.]]], dtype=torch.float64)
+thresholds: tensor([-4.57719946], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/29): BoundParams(name=/29, inputs=[], perturbed=False)
+  (/30): BoundParams(name=/30, inputs=[], perturbed=False)
+  (/31): BoundParams(name=/31, inputs=[], perturbed=False)
+  (/32): BoundParams(name=/32, inputs=[], perturbed=False)
+  (/33): BoundParams(name=/33, inputs=[], perturbed=False)
+  (/34): BoundParams(name=/34, inputs=[], perturbed=False)
+  (/35): BoundParams(name=/35, inputs=[], perturbed=False)
+  (/36): BoundParams(name=/36, inputs=[], perturbed=False)
+  (/37): BoundParams(name=/37, inputs=[], perturbed=False)
+  (/38): BoundParams(name=/38, inputs=[], perturbed=False)
+  (/39): BoundParams(name=/39, inputs=[], perturbed=False)
+  (/40): BoundParams(name=/40, inputs=[], perturbed=False)
+  (/41): BoundParams(name=/41, inputs=[], perturbed=False)
+  (/42): BoundParams(name=/42, inputs=[], perturbed=False)
+  (/43): BoundParams(name=/43, inputs=[], perturbed=False)
+  (/44): BoundParams(name=/44, inputs=[], perturbed=False)
+  (/45): BoundParams(name=/45, inputs=[], perturbed=False)
+  (/46): BoundParams(name=/46, inputs=[], perturbed=False)
+  (/47): BoundParams(name=/47, inputs=[], perturbed=False)
+  (/48): BoundParams(name=/48, inputs=[], perturbed=False)
+  (/49): BoundParams(name=/49, inputs=[], perturbed=False)
+  (/50): BoundParams(name=/50, inputs=[], perturbed=False)
+  (/51): BoundParams(name=/51, inputs=[], perturbed=False)
+  (/52): BoundParams(name=/52, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=False)
+  (/54): BoundRelu(name=/54, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=False)
+  (/56): BoundRelu(name=/56, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=False)
+  (/58): BoundRelu(name=/58, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=False)
+  (/60): BoundRelu(name=/60, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=False)
+  (/62): BoundRelu(name=/62, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=False)
+  (/64): BoundRelu(name=/64, inputs=[/input.19], perturbed=False)
+  (/input.23): BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=False)
+  (/66): BoundRelu(name=/66, inputs=[/input.23], perturbed=False)
+  (/input.27): BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=False)
+  (/68): BoundRelu(name=/68, inputs=[/input.27], perturbed=False)
+  (/input.31): BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=False)
+  (/70): BoundRelu(name=/70, inputs=[/input.31], perturbed=False)
+  (/input.35): BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=False)
+  (/72): BoundRelu(name=/72, inputs=[/input.35], perturbed=False)
+  (/input.39): BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=False)
+  (/74): BoundRelu(name=/74, inputs=[/input.39], perturbed=False)
+  (/input.43): BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=False)
+  (/76): BoundRelu(name=/76, inputs=[/input.43], perturbed=False)
+  (/77): BoundLinear(name=/77, inputs=[/76, /51, /52], perturbed=False)
+)
+Model prediction is: tensor([-0.76622391], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=True): [(BoundRelu(name=/54, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=True): [(BoundRelu(name=/56, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=True): [(BoundRelu(name=/58, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=True): [(BoundRelu(name=/60, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=True): [(BoundRelu(name=/62, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=True): [(BoundRelu(name=/64, inputs=[/input.19], perturbed=True), 0)]
+  BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=True): [(BoundRelu(name=/66, inputs=[/input.23], perturbed=True), 0)]
+  BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=True): [(BoundRelu(name=/68, inputs=[/input.27], perturbed=True), 0)]
+  BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=True): [(BoundRelu(name=/70, inputs=[/input.31], perturbed=True), 0)]
+  BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=True): [(BoundRelu(name=/72, inputs=[/input.35], perturbed=True), 0)]
+  BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=True): [(BoundRelu(name=/74, inputs=[/input.39], perturbed=True), 0)]
+  BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=True): [(BoundRelu(name=/76, inputs=[/input.43], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/54, inputs=[/input], perturbed=True)
+   BoundRelu(name=/56, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/58, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/60, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/62, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/64, inputs=[/input.19], perturbed=True)
+   BoundRelu(name=/66, inputs=[/input.23], perturbed=True)
+   BoundRelu(name=/68, inputs=[/input.27], perturbed=True)
+   BoundRelu(name=/70, inputs=[/input.31], perturbed=True)
+   BoundRelu(name=/72, inputs=[/input.35], perturbed=True)
+   BoundRelu(name=/74, inputs=[/input.39], perturbed=True)
+   BoundRelu(name=/76, inputs=[/input.43], perturbed=True)
+initial forward+backward bounds: tensor([[-7.49809456]], device='cuda:0')
+Worst class: (+ rhs) -7.49809455871582
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-21086.04296875], device='cuda:0')
+Total time: 0.0191  pickout: 0.0002 decision: 0.0012  bounding: 0.0172 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -21086.04296875
+Cumulative time: 0.1631612777709961
+
+Iteration 2
+Adv attack time: 0.0224s
+Batch size: 1500
+Worst bound: tensor([-6371.19287109], device='cuda:0')
+Total time: 0.0190  pickout: 0.0002 decision: 0.0011  bounding: 0.0172 add_domain: 0.0005
+Length of domains: 16
+20 branch and bound domains visited
+Current (lb-rhs): -6371.19287109375
+Cumulative time: 0.2051103115081787
+
+Iteration 3
+Adv attack time: 0.0370s
+Batch size: 1500
+Worst bound: tensor([-3014.20507812], device='cuda:0')
+Total time: 0.0191  pickout: 0.0002 decision: 0.0011  bounding: 0.0173 add_domain: 0.0005
+Length of domains: 64
+84 branch and bound domains visited
+Current (lb-rhs): -3014.205078125
+Cumulative time: 0.2616117000579834
+
+Iteration 4
+Adv attack time: 0.0372s
+Batch size: 1500
+Worst bound: tensor([-2413.38452148], device='cuda:0')
+Total time: 0.0197  pickout: 0.0002 decision: 0.0006  bounding: 0.0184 add_domain: 0.0005
+Length of domains: 128
+212 branch and bound domains visited
+Current (lb-rhs): -2413.384521484375
+Cumulative time: 0.31893062591552734
+
+Iteration 5
+Adv attack time: 0.0366s
+Batch size: 1500
+Worst bound: tensor([-1307.26623535], device='cuda:0')
+Total time: 0.0270  pickout: 0.0002 decision: 0.0006  bounding: 0.0257 add_domain: 0.0005
+Length of domains: 251
+468 branch and bound domains visited
+Current (lb-rhs): -1307.2662353515625
+Cumulative time: 0.3829619884490967
+
+Iteration 6
+Adv attack time: 0.0366s
+Batch size: 1500
+Worst bound: tensor([-1487.29357910], device='cuda:0')
+Total time: 0.0447  pickout: 0.0002 decision: 0.0006  bounding: 0.0434 add_domain: 0.0005
+Length of domains: 428
+970 branch and bound domains visited
+Current (lb-rhs): -1487.2935791015625
+Cumulative time: 0.46471714973449707
+
+Iteration 7
+Adv attack time: 0.0367s
+Batch size: 1500
+Worst bound: tensor([-532.12414551], device='cuda:0')
+Total time: 0.0634  pickout: 0.0002 decision: 0.0007  bounding: 0.0620 add_domain: 0.0005
+Length of domains: 368
+1826 branch and bound domains visited
+Current (lb-rhs): -532.1241455078125
+Cumulative time: 0.5652437210083008
+
+Iteration 8
+Adv attack time: 0.0373s
+Batch size: 1500
+Worst bound: tensor([-460.42529297], device='cuda:0')
+Total time: 0.0589  pickout: 0.0002 decision: 0.0007  bounding: 0.0575 add_domain: 0.0005
+Length of domains: 391
+2562 branch and bound domains visited
+Current (lb-rhs): -460.42529296875
+Cumulative time: 0.6618292331695557
+
+Iteration 9
+Adv attack time: 0.0370s
+Batch size: 1500
+Worst bound: tensor([-249.96203613], device='cuda:0')
+Total time: 0.0601  pickout: 0.0002 decision: 0.0007  bounding: 0.0588 add_domain: 0.0005
+Length of domains: 307
+3344 branch and bound domains visited
+Current (lb-rhs): -249.9620361328125
+Cumulative time: 0.7595229148864746
+
+Iteration 10
+Adv attack time: 0.0374s
+Batch size: 1500
+Worst bound: tensor([-200.20812988], device='cuda:0')
+Total time: 0.0493  pickout: 0.0002 decision: 0.0007  bounding: 0.0480 add_domain: 0.0005
+Length of domains: 426
+3958 branch and bound domains visited
+Current (lb-rhs): -200.2081298828125
+Cumulative time: 0.8466508388519287
+
+Iteration 11
+Adv attack time: 0.0368s
+Batch size: 1500
+Worst bound: tensor([-77.24011230], device='cuda:0')
+Total time: 0.0630  pickout: 0.0002 decision: 0.0007  bounding: 0.0617 add_domain: 0.0005
+Length of domains: 380
+4810 branch and bound domains visited
+Current (lb-rhs): -77.2401123046875
+Cumulative time: 0.9469423294067383
+
+Iteration 12
+Adv attack time: 0.0380s
+Batch size: 1500
+Worst bound: tensor([-77.20289612], device='cuda:0')
+Total time: 0.0589  pickout: 0.0002 decision: 0.0007  bounding: 0.0576 add_domain: 0.0005
+Length of domains: 612
+5570 branch and bound domains visited
+Current (lb-rhs): -77.20289611816406
+Cumulative time: 1.0441994667053223
+
+Iteration 13
+Adv attack time: 0.0370s
+Batch size: 1500
+Worst bound: tensor([-28.90429115], device='cuda:0')
+Total time: 0.0851  pickout: 0.0002 decision: 0.0007  bounding: 0.0838 add_domain: 0.0005
+Length of domains: 368
+6794 branch and bound domains visited
+Current (lb-rhs): -28.9042911529541
+Cumulative time: 1.167363166809082
+
+Iteration 14
+Adv attack time: 0.0372s
+Batch size: 1500
+Worst bound: tensor([-27.69938850], device='cuda:0')
+Total time: 0.0549  pickout: 0.0002 decision: 0.0007  bounding: 0.0535 add_domain: 0.0005
+Length of domains: 515
+7530 branch and bound domains visited
+Current (lb-rhs): -27.69938850402832
+Cumulative time: 1.25986909866333
+
+Iteration 15
+Adv attack time: 0.0373s
+Batch size: 1500
+Worst bound: tensor([-6.94593954], device='cuda:0')
+Total time: 0.0774  pickout: 0.0002 decision: 0.0006  bounding: 0.0761 add_domain: 0.0005
+Length of domains: 292
+8560 branch and bound domains visited
+Current (lb-rhs): -6.945939540863037
+Cumulative time: 1.3750691413879395
+
+Iteration 16
+Adv attack time: 0.0367s
+Batch size: 1500
+Worst bound: tensor([-7.91883326], device='cuda:0')
+Total time: 0.0489  pickout: 0.0002 decision: 0.0007  bounding: 0.0476 add_domain: 0.0005
+Length of domains: 488
+9144 branch and bound domains visited
+Current (lb-rhs): -7.918833255767822
+Cumulative time: 1.461174488067627
+
+Iteration 17
+Adv attack time: 0.0375s
+Batch size: 1500
+Worst bound: tensor([-0.62504292], device='cuda:0')
+Total time: 0.0727  pickout: 0.0002 decision: 0.0007  bounding: 0.0714 add_domain: 0.0005
+Length of domains: 5
+10120 branch and bound domains visited
+Current (lb-rhs): -0.6250429153442383
+Cumulative time: 1.5718307495117188
+
+Iteration 18
+Adv attack time: 0.0289s
+Batch size: 1500
+Worst bound: tensor([3.63476658], device='cuda:0')
+Total time: 0.0257  pickout: 0.0002 decision: 0.0011  bounding: 0.0242 add_domain: 0.0002
+Length of domains: 0
+10140 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is -0.9424329996109009
+Cumulative time: 1.6265592575073242
+
+Result: safe in 10.6918 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 29, vnnlib ID: 29 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=64_m=1_instance_7_1.onnx
+Using vnnlib vnnlib/property_N=64_1.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=64_1.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=64_m=1_instance_7_1.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=64_m=1_instance_7_1.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 8.3562 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 30, vnnlib ID: 30 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=64_m=1_instance_7_2.onnx
+Using vnnlib vnnlib/property_N=64_2.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=64_2.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=64_m=1_instance_7_2.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=64_m=1_instance_7_2.onnx.optimized
+Result: unsafe-pt_lirpa_attack in 8.3382 seconds
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% idx: 31, vnnlib ID: 31 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using onnx onnx/tllBench_n=2_N=M=64_m=1_instance_7_3.onnx
+Using vnnlib vnnlib/property_N=64_3.vnnlib
+Precompiled vnnlib file found at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/vnnlib/property_N=64_3.vnnlib.compiled
+Loading onnx ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=64_m=1_instance_7_3.onnx wih quirks {}
+Onnx optimization with flag: merge_linear
+Found existed optimized onnx model at ../../vnncomp2023_benchmarks/benchmarks/tllverifybench/onnx/tllBench_n=2_N=M=64_m=1_instance_7_3.onnx.optimized
+Attack parameters: initialization=uniform, steps=100, restarts=30, alpha=0.5, initialization=uniform, GAMA=False
+Model output of first 5 examples:
+ tensor([[-1.80384922]], device='cuda:0')
+Adv example prediction (first 2 examples and 2 restarts):
+ tensor([[[-4.45243645]]], device='cuda:0')
+PGD attack margin (first 2 examles and 10 specs):
+ tensor([[[1.15656710]]], device='cuda:0')
+number of violation:  0
+Attack finished in 0.2796 seconds.
+PGD attack failed
+Total VNNLIB file length: 1, max property batch size: 1, total number of batches: 1
+
+Properties batch 0, size 1
+Remaining timeout: 591.2056338787079
+##### Instance 31 first 10 spec matrices: 
+tensor([[[1.]]], dtype=torch.float64)
+thresholds: tensor([-5.60900354], device='cuda:0') ######
+Model: BoundedModule(
+  (/0): BoundInput(name=/0, inputs=[], perturbed=False)
+  (/27): BoundParams(name=/27, inputs=[], perturbed=False)
+  (/28): BoundParams(name=/28, inputs=[], perturbed=False)
+  (/29): BoundParams(name=/29, inputs=[], perturbed=False)
+  (/30): BoundParams(name=/30, inputs=[], perturbed=False)
+  (/31): BoundParams(name=/31, inputs=[], perturbed=False)
+  (/32): BoundParams(name=/32, inputs=[], perturbed=False)
+  (/33): BoundParams(name=/33, inputs=[], perturbed=False)
+  (/34): BoundParams(name=/34, inputs=[], perturbed=False)
+  (/35): BoundParams(name=/35, inputs=[], perturbed=False)
+  (/36): BoundParams(name=/36, inputs=[], perturbed=False)
+  (/37): BoundParams(name=/37, inputs=[], perturbed=False)
+  (/38): BoundParams(name=/38, inputs=[], perturbed=False)
+  (/39): BoundParams(name=/39, inputs=[], perturbed=False)
+  (/40): BoundParams(name=/40, inputs=[], perturbed=False)
+  (/41): BoundParams(name=/41, inputs=[], perturbed=False)
+  (/42): BoundParams(name=/42, inputs=[], perturbed=False)
+  (/43): BoundParams(name=/43, inputs=[], perturbed=False)
+  (/44): BoundParams(name=/44, inputs=[], perturbed=False)
+  (/45): BoundParams(name=/45, inputs=[], perturbed=False)
+  (/46): BoundParams(name=/46, inputs=[], perturbed=False)
+  (/47): BoundParams(name=/47, inputs=[], perturbed=False)
+  (/48): BoundParams(name=/48, inputs=[], perturbed=False)
+  (/49): BoundParams(name=/49, inputs=[], perturbed=False)
+  (/50): BoundParams(name=/50, inputs=[], perturbed=False)
+  (/51): BoundParams(name=/51, inputs=[], perturbed=False)
+  (/52): BoundParams(name=/52, inputs=[], perturbed=False)
+  (/input): BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=False)
+  (/54): BoundRelu(name=/54, inputs=[/input], perturbed=False)
+  (/input.3): BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=False)
+  (/56): BoundRelu(name=/56, inputs=[/input.3], perturbed=False)
+  (/input.7): BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=False)
+  (/58): BoundRelu(name=/58, inputs=[/input.7], perturbed=False)
+  (/input.11): BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=False)
+  (/60): BoundRelu(name=/60, inputs=[/input.11], perturbed=False)
+  (/input.15): BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=False)
+  (/62): BoundRelu(name=/62, inputs=[/input.15], perturbed=False)
+  (/input.19): BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=False)
+  (/64): BoundRelu(name=/64, inputs=[/input.19], perturbed=False)
+  (/input.23): BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=False)
+  (/66): BoundRelu(name=/66, inputs=[/input.23], perturbed=False)
+  (/input.27): BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=False)
+  (/68): BoundRelu(name=/68, inputs=[/input.27], perturbed=False)
+  (/input.31): BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=False)
+  (/70): BoundRelu(name=/70, inputs=[/input.31], perturbed=False)
+  (/input.35): BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=False)
+  (/72): BoundRelu(name=/72, inputs=[/input.35], perturbed=False)
+  (/input.39): BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=False)
+  (/74): BoundRelu(name=/74, inputs=[/input.39], perturbed=False)
+  (/input.43): BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=False)
+  (/76): BoundRelu(name=/76, inputs=[/input.43], perturbed=False)
+  (/77): BoundLinear(name=/77, inputs=[/76, /51, /52], perturbed=False)
+)
+Model prediction is: tensor([-1.80384970], device='cuda:0')
+Split layers:
+  BoundLinear(name=/input, inputs=[/0, /27, /28], perturbed=True): [(BoundRelu(name=/54, inputs=[/input], perturbed=True), 0)]
+  BoundLinear(name=/input.3, inputs=[/54, /29, /30], perturbed=True): [(BoundRelu(name=/56, inputs=[/input.3], perturbed=True), 0)]
+  BoundLinear(name=/input.7, inputs=[/56, /31, /32], perturbed=True): [(BoundRelu(name=/58, inputs=[/input.7], perturbed=True), 0)]
+  BoundLinear(name=/input.11, inputs=[/58, /33, /34], perturbed=True): [(BoundRelu(name=/60, inputs=[/input.11], perturbed=True), 0)]
+  BoundLinear(name=/input.15, inputs=[/60, /35, /36], perturbed=True): [(BoundRelu(name=/62, inputs=[/input.15], perturbed=True), 0)]
+  BoundLinear(name=/input.19, inputs=[/62, /37, /38], perturbed=True): [(BoundRelu(name=/64, inputs=[/input.19], perturbed=True), 0)]
+  BoundLinear(name=/input.23, inputs=[/64, /39, /40], perturbed=True): [(BoundRelu(name=/66, inputs=[/input.23], perturbed=True), 0)]
+  BoundLinear(name=/input.27, inputs=[/66, /41, /42], perturbed=True): [(BoundRelu(name=/68, inputs=[/input.27], perturbed=True), 0)]
+  BoundLinear(name=/input.31, inputs=[/68, /43, /44], perturbed=True): [(BoundRelu(name=/70, inputs=[/input.31], perturbed=True), 0)]
+  BoundLinear(name=/input.35, inputs=[/70, /45, /46], perturbed=True): [(BoundRelu(name=/72, inputs=[/input.35], perturbed=True), 0)]
+  BoundLinear(name=/input.39, inputs=[/72, /47, /48], perturbed=True): [(BoundRelu(name=/74, inputs=[/input.39], perturbed=True), 0)]
+  BoundLinear(name=/input.43, inputs=[/74, /49, /50], perturbed=True): [(BoundRelu(name=/76, inputs=[/input.43], perturbed=True), 0)]
+Nonlinear functions:
+   BoundRelu(name=/54, inputs=[/input], perturbed=True)
+   BoundRelu(name=/56, inputs=[/input.3], perturbed=True)
+   BoundRelu(name=/58, inputs=[/input.7], perturbed=True)
+   BoundRelu(name=/60, inputs=[/input.11], perturbed=True)
+   BoundRelu(name=/62, inputs=[/input.15], perturbed=True)
+   BoundRelu(name=/64, inputs=[/input.19], perturbed=True)
+   BoundRelu(name=/66, inputs=[/input.23], perturbed=True)
+   BoundRelu(name=/68, inputs=[/input.27], perturbed=True)
+   BoundRelu(name=/70, inputs=[/input.31], perturbed=True)
+   BoundRelu(name=/72, inputs=[/input.35], perturbed=True)
+   BoundRelu(name=/74, inputs=[/input.39], perturbed=True)
+   BoundRelu(name=/76, inputs=[/input.43], perturbed=True)
+initial forward+backward bounds: tensor([[-11.39697933]], device='cuda:0')
+Worst class: (+ rhs) -11.396979331970215
+Iteration 1
+Batch size: 1500
+Worst bound: tensor([-26504.61132812], device='cuda:0')
+Total time: 0.0171  pickout: 0.0002 decision: 0.0012  bounding: 0.0153 add_domain: 0.0005
+Length of domains: 4
+4 branch and bound domains visited
+Current (lb-rhs): -26504.611328125
+Cumulative time: 0.1641101837158203
+
+Iteration 2
+Adv attack time: 0.0218s
+Batch size: 1500
+Worst bound: tensor([-10566.13867188], device='cuda:0')
+Total time: 0.0172  pickout: 0.0002 decision: 0.0011  bounding: 0.0154 add_domain: 0.0005
+Length of domains: 16
+20 branch and bound domains visited
+Current (lb-rhs): -10566.138671875
+Cumulative time: 0.20369219779968262
+
+Iteration 3
+Adv attack time: 0.0364s
+Batch size: 1500
+Worst bound: tensor([-4493.36132812], device='cuda:0')
+Total time: 0.0186  pickout: 0.0002 decision: 0.0011  bounding: 0.0168 add_domain: 0.0005
+Length of domains: 64
+84 branch and bound domains visited
+Current (lb-rhs): -4493.361328125
+Cumulative time: 0.2591211795806885
+
+Iteration 4
+Adv attack time: 0.0367s
+Batch size: 1500
+Worst bound: tensor([-4165.01269531], device='cuda:0')
+Total time: 0.0185  pickout: 0.0002 decision: 0.0006  bounding: 0.0172 add_domain: 0.0005
+Length of domains: 128
+212 branch and bound domains visited
+Current (lb-rhs): -4165.0126953125
+Cumulative time: 0.31482863426208496
+
+Iteration 5
+Adv attack time: 0.0379s
+Batch size: 1500
+Worst bound: tensor([-1928.65661621], device='cuda:0')
+Total time: 0.0268  pickout: 0.0002 decision: 0.0007  bounding: 0.0254 add_domain: 0.0005
+Length of domains: 253
+468 branch and bound domains visited
+Current (lb-rhs): -1928.6566162109375
+Cumulative time: 0.3799006938934326
+
+Iteration 6
+Adv attack time: 0.0367s
+Batch size: 1500
+Worst bound: tensor([-1707.66662598], device='cuda:0')
+Total time: 0.0455  pickout: 0.0002 decision: 0.0007  bounding: 0.0441 add_domain: 0.0005
+Length of domains: 439
+974 branch and bound domains visited
+Current (lb-rhs): -1707.6666259765625
+Cumulative time: 0.4625096321105957
+
+Iteration 7
+Adv attack time: 0.0370s
+Batch size: 1500
+Worst bound: tensor([-758.08349609], device='cuda:0')
+Total time: 0.0637  pickout: 0.0002 decision: 0.0007  bounding: 0.0623 add_domain: 0.0005
+Length of domains: 449
+1852 branch and bound domains visited
+Current (lb-rhs): -758.08349609375
+Cumulative time: 0.5637040138244629
+
+Iteration 8
+Adv attack time: 0.0380s
+Batch size: 1500
+Worst bound: tensor([-628.33343506], device='cuda:0')
+Total time: 0.0691  pickout: 0.0002 decision: 0.0007  bounding: 0.0678 add_domain: 0.0005
+Length of domains: 360
+2750 branch and bound domains visited
+Current (lb-rhs): -628.3334350585938
+Cumulative time: 0.6712501049041748
+
+Iteration 9
+Adv attack time: 0.0375s
+Batch size: 1500
+Worst bound: tensor([-308.72756958], device='cuda:0')
+Total time: 0.0576  pickout: 0.0002 decision: 0.0007  bounding: 0.0562 add_domain: 0.0005
+Length of domains: 281
+3470 branch and bound domains visited
+Current (lb-rhs): -308.7275695800781
+Cumulative time: 0.7667462825775146
+
+Iteration 10
+Adv attack time: 0.0372s
+Batch size: 1500
+Worst bound: tensor([-245.89082336], device='cuda:0')
+Total time: 0.0479  pickout: 0.0002 decision: 0.0007  bounding: 0.0466 add_domain: 0.0005
+Length of domains: 281
+4032 branch and bound domains visited
+Current (lb-rhs): -245.8908233642578
+Cumulative time: 0.8523292541503906
+
+Iteration 11
+Adv attack time: 0.0366s
+Batch size: 1500
+Worst bound: tensor([-126.75102997], device='cuda:0')
+Total time: 0.0449  pickout: 0.0002 decision: 0.0007  bounding: 0.0435 add_domain: 0.0005
+Length of domains: 285
+4594 branch and bound domains visited
+Current (lb-rhs): -126.75102996826172
+Cumulative time: 0.9342525005340576
+
+Iteration 12
+Adv attack time: 0.0371s
+Batch size: 1500
+Worst bound: tensor([-114.20085907], device='cuda:0')
+Total time: 0.0479  pickout: 0.0002 decision: 0.0006  bounding: 0.0466 add_domain: 0.0005
+Length of domains: 337
+5164 branch and bound domains visited
+Current (lb-rhs): -114.20085906982422
+Cumulative time: 1.0197312831878662
+
+Iteration 13
+Adv attack time: 0.0367s
+Batch size: 1500
+Worst bound: tensor([-46.59289551], device='cuda:0')
+Total time: 0.0561  pickout: 0.0002 decision: 0.0006  bounding: 0.0548 add_domain: 0.0005
+Length of domains: 363
+5838 branch and bound domains visited
+Current (lb-rhs): -46.5928955078125
+Cumulative time: 1.1129286289215088
+
+Iteration 14
+Adv attack time: 0.0371s
+Batch size: 1500
+Worst bound: tensor([-39.64622116], device='cuda:0')
+Total time: 0.0583  pickout: 0.0002 decision: 0.0007  bounding: 0.0570 add_domain: 0.0005
+Length of domains: 538
+6564 branch and bound domains visited
+Current (lb-rhs): -39.64622116088867
+Cumulative time: 1.2087595462799072
+
+Iteration 15
+Adv attack time: 0.0372s
+Batch size: 1500
+Worst bound: tensor([-17.97998047], device='cuda:0')
+Total time: 0.0772  pickout: 0.0002 decision: 0.0007  bounding: 0.0759 add_domain: 0.0005
+Length of domains: 522
+7640 branch and bound domains visited
+Current (lb-rhs): -17.97998046875
+Cumulative time: 1.3237521648406982
+
+Iteration 16
+Adv attack time: 0.0370s
+Batch size: 1500
+Worst bound: tensor([-12.42563057], device='cuda:0')
+Total time: 0.0775  pickout: 0.0002 decision: 0.0007  bounding: 0.0761 add_domain: 0.0005
+Length of domains: 658
+8684 branch and bound domains visited
+Current (lb-rhs): -12.425630569458008
+Cumulative time: 1.4387381076812744
+
+Iteration 17
+Adv attack time: 0.0369s
+Batch size: 1500
+Worst bound: tensor([-5.53873014], device='cuda:0')
+Total time: 0.0903  pickout: 0.0002 decision: 0.0007  bounding: 0.0889 add_domain: 0.0005
+Length of domains: 172
+10000 branch and bound domains visited
+Current (lb-rhs): -5.538730144500732
+Cumulative time: 1.566321611404419
+
+Iteration 18
+Adv attack time: 0.0386s
+Batch size: 1500
+Worst bound: tensor([-2.11351538], device='cuda:0')
+Total time: 0.0356  pickout: 0.0002 decision: 0.0007  bounding: 0.0343 add_domain: 0.0005
+Length of domains: 31
+10344 branch and bound domains visited
+Current (lb-rhs): -2.1135153770446777
+Cumulative time: 1.6410014629364014
+
+Iteration 19
+Adv attack time: 0.0368s
+Batch size: 1500
+Worst bound: tensor([2.16471553], device='cuda:0')
+Total time: 0.0258  pickout: 0.0002 decision: 0.0011  bounding: 0.0243 add_domain: 0.0002
+Length of domains: 0
+10468 branch and bound domains visited
+No domains left, verification finished!
+The lower bound of last batch is -3.4442880153656006
+Cumulative time: 1.7036654949188232
+
+Result: safe in 10.7457 seconds
+############# Summary #############
+Final verified acc: 46.875% (total 32 examples)
+Problem instances count: 32 , total verified (safe/unsat): 15 , total falsified (unsafe/sat): 17 , timeout: 0
+
+Total verification time: 92.03590726852417
+Mean time for ALL instances (total 32):2.876121203353504
+Mean time for verified SAFE instances(total 15): 3.3284436384836833 
+Mean time for verified (SAFE + UNSAFE) instances (total 32): 2.8761221021413803
+Mean time for verified UNSAFE instances (total 17): 2.4770148641922893
+
+safe (total 15), index: [0, 1, 3, 9, 10, 11, 13, 14, 17, 18, 19, 22, 24, 28, 31]
+unsafe-pt_lirpa_attack (total 17), index: [2, 4, 5, 6, 7, 8, 12, 15, 16, 20, 21, 23, 25, 26, 27, 29, 30]
