@@ -1,166 +1,80 @@
-# ProbVerNet 🚀
-A unified deep neural networks probabilistic verification framework. ProbVerNet provides a suite of tools to both probabilistically verify the neural network's robustness to adversarial pertubation and approximately compute the preimage bounds of neural networks, i.e., to enumerate all the input regions where a specified property holds. The framework is currently under construction. 
+
+# PT-LiRPA
+
+We present **P**robabilistically **T**ightened **Li**near **R**elaxation-based **P**erturbation **A**nalysis ($\texttt{PT-LiRPA}$), a novel framework that combines over-approximation techniques from LiRPA-based approaches with a sampling-based method to compute tight intermediate reachable sets. In detail, we show that with negligible computational overhead, $\texttt{PT-LiRPA}$ exploiting the estimated reachable sets, significantly tightens the lower and upper linear bounds of a neural network's output,  reducing the computational cost of formal verification tools while providing probabilistic guarantees on verification soundness. Extensive experiments on standard formal verification benchmarks, including the International Verification of Neural Networks Competition, show that our $\texttt{PT-LiRPA}$-based verifier improves robustness certificates, i.e., the certified lower bound of $\varepsilon$ perturbation tolerated by the models, by up to 3.31X and 2.26X compared to related work. Importantly, our probabilistic approach results in a valuable solution for challenging competition entries where state-of-the-art formal verification methods fail, allowing us to provide answers with high confidence (i.e., at least 99%). 
+
+## Getting Started
+
+$\texttt{PT-LiRPA}$ is strongly based and directly integrated in $\alpha,\beta$-CROWN (https://github.com/Verified-Intelligence/alpha-beta-CROWN). To use our probabilistic version of the tool, we provide a modified version of Zhang et al. code directly in this repo.
 
 
-## Supported Features ✅
+**Installation**: Clone the original repository (https://github.com/lmarza/ProbVerNet) and follow the setup instructions provided  there. $\texttt{PT-LiRPA}$ is tested on Python 3.10 and CUDA 11.8. It can be installed easily into a conda environment. If you don't have anaconda, you can install it from here [miniconda](https://docs.conda.io/en/latest/miniconda.html). The code reported in this repo works with the **prob-ver** conda environment created in the main folder. 
 
-<p align="center">
-<img src="overview.png" width="100%">
-</p>
+All the data are collected on a cluster running Rocky Linux 9.34 equipped with Nvidia RTX A6000 (48 GiB) and a CPU AMD Epyc 7313 (16 cores). 
 
-- [ ] **PT-LiRPA** ([Marzari et al., JAIR 2025](https://arxiv.org/pdf/2507.05405)): Probabilistically Tightened Linear Relaxation-based Perturbation Analysis, a novel probabilistic framework that combines over-approximation techniques from LiRPA-based approaches with a sampling-based method to compute tight intermediate reachable sets, significantly tightening the lower and upper linear bounds of a neural network's output and reducing the computational cost of formal verification tools while providing probabilistic guarantees on verification soundness (integration with the framework coming soon).
-- [ ] **CountingProVe** ([Marzari et al., IJCAI 2023](https://dl.acm.org/doi/abs/10.24963/ijcai.2023/25)): Approximate count method with probabilistic guarantees on the interval of violation rate present in the property's domain (integration with the framework coming soon).
-- [x] **ϵ-ProVe** ([Marzari et al., AAAI 2024](https://ojs.aaai.org/index.php/AAAI/article/view/30134)): Efficient approximate enumeration strategy with tight probabilistic guarantees for enumerating all the (un)safe regions of the property's domain for a given safety property. 
-- [x] **RF-ProVe** ([Marzari et al., AAAI 2026](https://lmarza.github.io/assets/pdf/aaai26.pdf)): Compact probabilistic enumeration of preimage bounds of neural networks with guarantees on the coverage and bounded error of the solution returned.
 
-## Installation 
+## PT-LiRPA for max tolerated $\varepsilon$-pertubation computation
+
+For the comparison with CROWN, PROVEN and Randomized smoothing, you can follow these instructions.
 
 ```bash
-git clone https://github.com/lmarza/ProbVerNet.git
-cd ProbVerNet
-conda env create -f environment.yml
 conda activate prob-ver
+cd PT-LiRPA/alpha-beta-CROWN/complete_verifier
 ```
 
-### Troubleshooting ⚠️
-  - If installation fails due to a specific package (e.g., `pplpy`):
-  - Try editing the `environment.yml` to specify a compatible version.
-  - Alternatively, install all other packages first, then install the problematic one manually.
-
-
-
-## Definition of the properties
-Properties can be defined with 3 different formulations:
-
-#### Reachable sets
-Following the definition of rechable set [Liu et al.], given an precondition on the input X and a desired reachable set Y, the property is verified if for each *x* in X, it follows that N(x) is in Y *(i.e., if the input belongs to the interval X, the output must belong to the interval Y)*.
+Inside ```exp_configs/max_eps_perturbation``` we have already provided the configuration.yaml both for mnist and cifar, to select the model names and seeds so that the paper results can be reproduced. In detail, you have to specify the model name at line 7 and the vnnlib_path of the based property to verify. 
 ```python
-property = {
-	"X" : [[0.1, 0.34531], [0.7, 1.1]],
-	"Y" : [[0.0, 0.2], [0.0, 0.2]]
-}
+name_model in ["mnist_2layer_relu_1024", "mnist_3layer_relu_1024", "mnist_2layer_tanh_1024", "mnist_3layer_tanh_1024", "mnist_4layer_sigmoid_1024"]
 ```
 
-#### Decision
-Following the definition of ACAS XU [Julian et al.], given an input property P and an output node A corresponding to an action, the property is verified if, for each *x* in P, it follows that the action A will never be selected *(i.e., if the input belongs to the interval P, the output of node A is never the one with the highest value)*.
-```python
-property = {
-	"X" : [[0.1, 0.34531], [0.7, 1.1]],
-	"Y" : 1
-}
-```
-
-#### Positive 
-Following the definition of α,β-CROWN [Wang et al.], given an input property P, the output of the network is non-negative *(i.e., if the input belongs to the interval P, the output of each node is greater or equals zero)*
-```python
-property = {
-  "X" : [[0.1, 0.34531], [0.7, 1.1]],	
-  "Y" : y > 0
-}
-```
-
-ProbVerNet framework adopts a positive property encoding, where a multi-output node model can be seamlessly converted into a single-output node to verify the desired property (as shown below). We are working towards providing a more intuitive and straightforward way to define safety properties for the enum methods of ProbVerNet ($\varepsilon$-ProVe and RF-ProVe), with upcoming support for the VNN-Lib format as for PT-LiRPA. 
-
-> Example of how to convert a 2-output node model, to verify the property $\mathcal{Y}: y_0 \geq y_1$
-```python
-# Wrap the model to override forward
-class BinaryDecisionWrapper(nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.model = model
-
-    def forward(self, x):
-        out = self.model(x)
-        return torch.where(out[:, 0] >= out[:, 1], torch.tensor(1), torch.tensor(-1))
-```
-
-## Results of the analysis 🔍
-The verification analysis via ProbVerNet yields different possible outcomes depending on the selected verification type. 
-
-
-**PT-LiRPA verififier:**
-- maximum tolerated $\varepsilon$ input perturbation by the model under analysis.
-- *SAT* (robust) if the property is respected, UNSAT (not-robust) otherwise.
-
-**Enumeration verifiers ($\varepsilon$-ProVe and RF-ProVe):**
-- preimage bounds encoded with convex polytopes (for now, only hyperrectangles)
-- number of preimage bounds enumerated where the property is respected.
-- Estimated coverage with respect to the target one.
-- % error on the returned solution.
-
-
-## Example of running the enumeration verification with our tools.
+and update the corresponding ```idxs_images``` field at line 16.
+To run the experiment with CROWN on models trained in dataset_name 
 
 ```bash
-cd RF-ProVe
-python rf_prove.py --config_path "configs_rf_prove/cartpole.yaml" # for RF-ProVe
+python abcrown_max_perturbation.py --config exp_configs/max_eps_perturbation/mnist.yaml 
 ```
+
+To run the experiment with CROWN+PT-LiRPA on models trained in dataset_name.
+```bash
+python abcrown_max_perturbation.py --config exp_configs/max_eps_perturbation/mnist.yaml --use_pt_lirpa=True	
+```
+
+
+
+## PT-LiRPA in the VNN-COMP
+
+For the VNN-COMP experiments, you have to first unzipped all the models in the ```PT-LiRPA/vnncomp2022_benchmarks``` and ```PT-LiRPA/vnncomp2023_benchmarks```.  Then:
 
 ```bash
-cd eProVe
-python e_prove.py --config_path "configs_e_prove/cartpole.yaml" # for ε-ProVe
+conda activate prob-ver
+cd PT-LiRPA/alpha-beta-CROWN/complete_verifier
+```
+And run one of the following:
+
+```bash
+python abcrown.py --config exp_configs/vnncomp23/acasxu.yaml
+```
+To run the experiment with $\alpha,\beta$-CROWN on the property $\phi_2$ of the ACAS XU challenge
+```bash
+python abcrown.py --config exp_configs/vnncomp23/acasxu.yaml --use_pt_lirpa True --use_pt_attack True
+```
+for $\alpha,\beta$-CROWN enhanced with $\texttt{PT-LiRPA}$.
+
+Similarly for the other benchmarks. In the ```PT-LiRPA/job``` folder we have also provided the bash scripts to run the verification on slurm-based cluster.
+
+
+### ⚠️ Troubleshooting
+
+As previously mentioned, we use an Nvidia RTX A6000 (48 GiB) in our experiments. Any potential memory errors from using different hardware can be addressed by changing the number of samples used in $\texttt{PT-LiRPA}$ to compute intermediate reachable sets in ```alpha-beta-CROWN/complete_verifier/utils_cifar.py``` and other utils files.
+
+```python
+def IBP_batch_wilks_cifar_w_error(model, lower, upper, batch_size=350_000, beta=0.85, p=0.01, device='cpu')
+```
+```python
+def  IBP_batch_wilks_cifar(model, lower, upper, batch_size=350_000, device='cpu')
+```
+```python
+def pt_lirpa_attack(model_ori, data_min, data_max, sample_size=100_000, idx_prop_to_verify=1, device='cpu')
 ```
 
-## Reproduce the paper results 🧐
-
-To ensure full reproducibility of our experimental results, we provide dedicated branches for each paper release. All code, configuration files, and detailed instructions to reproduce the results are available in the following.
-
-**PT-LiRPA** ([Marzari et al., und.review JAIR 2025](https://arxiv.org/pdf/2507.05405)) 👉 coming soon
-
-**CountingProVe** ([Marzari et al., IJCAI 2023](https://dl.acm.org/doi/abs/10.24963/ijcai.2023/25)) 👉 coming soon
-
-**ϵ-ProVe** ([Marzari et al., AAAI 2024](https://ojs.aaai.org/index.php/AAAI/article/view/30134)) 👉 [**AAAI24**](https://github.com/lmarza/ProbVerNet/tree/AAAI24)
-
-**RF-ProVe** ([Marzari et al., AAAI 2026](https://lmarza.github.io/assets/pdf/aaai26.pdf)) 👉 [**AAAI26**](https://github.com/lmarza/ProbVerNet/tree/AAAI26)
-
----
-
-Each branch is self-contained and designed to enable full reproducibility of the reported results.
-
-
-## Reference 📚
-If you use our probabilistic framework in your work, please kindly cite our papers:
-
-```
-@article{marzari2025probabilistically,
-  title={Probabilistically Tightened Linear Relaxation-based Perturbation Analysis for Neural Network Verification},
-  author={Marzari, Luca and Cicalese, Ferdinando and Farinelli, Alessandro},
-  journal={arXiv preprint arXiv:2507.05405},
-  year={2025}
-}
-
-@inproceedings{marzari2023dnn,
-  title={The \#DNN-Verification Problem: Counting Unsafe Inputs for Deep Neural Networks},
-  author={Marzari, Luca and Corsi, Davide and Cicalese, Ferdinando and Farinelli, Alessandro},
-  booktitle={Proceedings of the Thirty-Second International Joint Conference on Artificial Intelligence},
-  pages={217--224},
-  year={2023}
-}
-
-@incollection{marzari2023scaling,
-  title={Scaling \#DNN-Verification Tools with Efficient Bound Propagation and Parallel Computing},
-  author={Marzari, Luca and Roncolato, Gabriele and Farinelli, Alessandro},
-  booktitle={AIRO 2023 Artificial Intelligence and Robotics 2023},
-  year={2023}
-}
-
-@inproceedings{marzari2024enumerating,
-  title={Enumerating safe regions in deep neural networks with provable probabilistic guarantees},
-  author={Marzari, Luca and Corsi, Davide and Marchesini, Enrico and Farinelli, Alessandro and Cicalese, Ferdinando},
-  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
-  volume={38},
-  number={19},
-  pages={21387--21394},
-  year={2024}
-}
-
-@inproceedings{marzari2026enum,
-  title={On the Probabilistic Learnability of Compact Neural Network Preimage Bounds},
-  author={Marzari, Luca and Bicego, Manuele and Cicalese, Ferdinando and Farinelli, Alessandro},
-  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
-  volume={},
-  number={},
-  pages={},
-  year={2026}
-}
-```
+Specifically the `batch_size` and `sample_size` parameters.
