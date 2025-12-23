@@ -8,7 +8,7 @@ A unified deep neural networks probabilistic verification framework. ProbVerNet 
 <img src="overview.png" width="100%">
 </p>
 
-- [ ] **PT-LiRPA** ([Marzari et al., JAIR 2025](https://arxiv.org/pdf/2507.05405)): Probabilistically Tightened Linear Relaxation-based Perturbation Analysis, a novel probabilistic framework that combines over-approximation techniques from LiRPA-based approaches with a sampling-based method to compute tight intermediate reachable sets, significantly tightening the lower and upper linear bounds of a neural network's output and reducing the computational cost of formal verification tools while providing probabilistic guarantees on verification soundness (integration with the framework coming soon).
+- [x] **PT-LiRPA** ([Marzari et al., JAIR 2025](https://arxiv.org/pdf/2507.05405)): Probabilistically Tightened Linear Relaxation-based Perturbation Analysis, a novel probabilistic framework that combines over-approximation techniques from LiRPA-based approaches with a sampling-based method to compute tight intermediate reachable sets, significantly tightening the lower and upper linear bounds of a neural network's output and reducing the computational cost of formal verification tools while providing probabilistic guarantees on verification soundness (integration with the framework coming soon).
 - [ ] **CountingProVe** ([Marzari et al., IJCAI 2023](https://dl.acm.org/doi/abs/10.24963/ijcai.2023/25)): Approximate count method with probabilistic guarantees on the interval of violation rate present in the property's domain (integration with the framework coming soon).
 - [x] **ϵ-ProVe** ([Marzari et al., AAAI 2024](https://ojs.aaai.org/index.php/AAAI/article/view/30134)): Efficient approximate enumeration strategy with tight probabilistic guarantees for enumerating all the (un)safe regions of the property's domain for a given safety property. 
 - [x] **RF-ProVe** ([Marzari et al., AAAI 2026](https://lmarza.github.io/assets/pdf/aaai26.pdf)): Compact probabilistic enumeration of preimage bounds of neural networks with guarantees on the coverage and bounded error of the solution returned.
@@ -125,7 +125,7 @@ If you use our probabilistic framework in your work, please kindly cite our pape
 @article{marzari2025probabilistically,
   title={Probabilistically Tightened Linear Relaxation-based Perturbation Analysis for Neural Network Verification},
   author={Marzari, Luca and Cicalese, Ferdinando and Farinelli, Alessandro},
-  journal={arXiv preprint arXiv:2507.05405},
+  journal={Journal of Artificial Intelligence Research},
   year={2025}
 }
 
