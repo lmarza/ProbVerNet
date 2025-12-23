@@ -105,7 +105,7 @@ python e_prove.py --config_path "configs_e_prove/cartpole.yaml" # for ε-ProVe
 
 To ensure full reproducibility of our experimental results, we provide dedicated branches for each paper release. All code, configuration files, and detailed instructions to reproduce the results are available in the following.
 
-**PT-LiRPA** ([Marzari et al., und.review JAIR 2025](https://arxiv.org/pdf/2507.05405)) 👉 coming soon
+**PT-LiRPA** ([Marzari et al., JAIR 2025](https://arxiv.org/pdf/2507.05405)) 👉  [**PT-LiRPA**](https://github.com/lmarza/ProbVerNet/tree/PT-LiRPA)
 
 **CountingProVe** ([Marzari et al., IJCAI 2023](https://dl.acm.org/doi/abs/10.24963/ijcai.2023/25)) 👉 coming soon
 
