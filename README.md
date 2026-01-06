@@ -123,9 +123,10 @@ If you use our probabilistic framework in your work, please kindly cite our pape
 
 ```
 @article{marzari2025probabilistically,
-  title={Probabilistically Tightened Linear Relaxation-based Perturbation Analysis for Neural Network Verification},
+  title={Probabilistically tightened linear relaxation-based perturbation analysis for neural network verification},
   author={Marzari, Luca and Cicalese, Ferdinando and Farinelli, Alessandro},
   journal={Journal of Artificial Intelligence Research},
+  volume={84},
   year={2025}
 }
 
